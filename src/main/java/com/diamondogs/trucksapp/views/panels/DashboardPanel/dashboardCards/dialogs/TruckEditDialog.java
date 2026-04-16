@@ -1,5 +1,7 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs;
 
+import com.diamondogs.trucksapp.model.Truck;
+import com.diamondogs.trucksapp.repositories.TruckRepository;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
 
 import javax.swing.*;
@@ -51,6 +53,23 @@ public class TruckEditDialog extends JDialog {
 
 
         VentanaCamion formCamion = new VentanaCamion("Actualizar Camion","Ingrese los nuevos datos");
+        
+        TruckRepository repo = new TruckRepository();
+        Truck truck = repo.findOneTruck(truckId);
+        
+        if (truck.getPlate() != null) {
+            formCamion.setPatente(truck.getPlate());
+            formCamion.setMarca(truck.getBrand());
+            formCamion.setModelo(truck.getModel());
+            formCamion.setAnio(String.valueOf(truck.getYear()));
+            formCamion.setKilometraje(String.valueOf(truck.getKilometers()));
+            formCamion.setConductor(String.valueOf(truck.getDriver()));
+            formCamion.setColor(truck.getColor());
+            if (truck.getLatest_maintenance() != null) {
+                formCamion.setLatest_maintenance(truck.getLatest_maintenance().toString());
+            }
+        }
+        
         panelForm.add(formCamion, BorderLayout.CENTER);
     }
 

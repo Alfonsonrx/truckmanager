@@ -41,7 +41,7 @@ public class VentanaCamion extends JPanel {
         panelTitulo.add(lblTitulo);
 
         panelFormulario = new JPanel();
-        // CORRECCIÓN 1: Cambiamos a 8 filas para que quepan todos los campos
+
         panelFormulario.setLayout(new GridLayout(8, 2, 10, 10));
         panelFormulario.setBorder(BorderFactory.createTitledBorder(title_form));
 
@@ -90,7 +90,7 @@ public class VentanaCamion extends JPanel {
         panelFormulario.add(lblColor);
         panelFormulario.add(txtColor);
 
-        // CORRECCIÓN 2: Agregamos los componentes de mantenimiento al panel
+
         panelFormulario.add(lblLatest_maintenance);
         panelFormulario.add(txtLatest_maintenance);
 
@@ -142,4 +142,13 @@ public class VentanaCamion extends JPanel {
     public String getLatest_maintenance() {
         return txtLatest_maintenance.getText();
     }
+
+    public void setPatente(String value) { txtPatente.setText(value); }
+    public void setMarca(String value) { txtMarca.setText(value); }
+    public void setModelo(String value) { txtModelo.setText(value); }
+    public void setAnio(String value) { txtAnio.setText(value); }
+    public void setKilometraje(String value) { txtKilometraje.setText(value); }
+    public void setConductor(String value) { txtConductor.setText(value); }
+    public void setColor(String value) { txtColor.setText(value); }
+    public void setLatest_maintenance(String value) { txtLatest_maintenance.setText(value); }
 }
