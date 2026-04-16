@@ -50,7 +50,7 @@ public class TruckEditDialog extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
 
-        VentanaCamion formCamion = new VentanaCamion("Actualizar camion","Ingrese los nuevos datos");
+        VentanaCamion formCamion = new VentanaCamion("Actualizar Camion","Ingrese los nuevos datos");
         panelForm.add(formCamion, BorderLayout.CENTER);
     }
 
