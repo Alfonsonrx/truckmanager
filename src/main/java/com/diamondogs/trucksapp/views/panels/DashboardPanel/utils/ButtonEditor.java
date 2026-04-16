@@ -22,7 +22,7 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value,
-                                                 boolean isSelected, int row, int column) {
+         boolean isSelected, int row, int column) {
         currentRow = row;
         return button;
     }

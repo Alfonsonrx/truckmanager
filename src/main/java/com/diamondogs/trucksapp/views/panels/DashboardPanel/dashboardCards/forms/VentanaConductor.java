@@ -1,4 +1,6 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms;
+import com.diamondogs.trucksapp.controller.UserController;
+import com.diamondogs.trucksapp.model.User;
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,12 +12,14 @@ public class VentanaConductor extends JPanel {
     private JLabel lblrol;
     private JLabel lbltelefono;
     private JLabel lblcontraseña;
+    private JLabel lblusername;
 
 
     private JTextField txtnombreCompleto;
     private JTextField txtrol;
     private JTextField txttelefono;
     private JTextField txtcontraeña;
+    private JTextField txtusername;
 
     private JButton btnGuardar;
     private JButton btnVolver;
@@ -24,30 +28,33 @@ public class VentanaConductor extends JPanel {
     private JPanel panelFormulario;
     private JPanel panelBotones;
 
-    public VentanaConductor(){
-        setSize(600,450);
+    public VentanaConductor(UserController controller) {
+        setSize(600, 450);
         setLayout(new BorderLayout());
 
         panelTitulo = new JPanel();
         lblTitulo = new JLabel("REGISTRO DE CONDUCTORES");
-        lblTitulo.setFont(new Font("Arial",Font.BOLD,16));
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         panelTitulo.add(lblTitulo);
 
         panelFormulario = new JPanel();
-        panelFormulario.setLayout(new GridLayout(6,2,10,10));
+        panelFormulario.setLayout(new GridLayout(6, 2, 10, 10));
         panelFormulario.setBorder(BorderFactory.createTitledBorder("Ingrese los datos del Conductor"));
 
-        lblnombreCompleto=new JLabel("Nombre Completo:");
-        txtnombreCompleto=new JTextField();
+        lblnombreCompleto = new JLabel("Nombre Completo:");
+        txtnombreCompleto = new JTextField();
 
-        lblrol=new JLabel("Rol:");
-        txtrol=new JTextField();
+        lblrol = new JLabel("Rol:");
+        txtrol = new JTextField();
 
-        lbltelefono=new JLabel("TELEFONO:");
-        txttelefono=new JTextField();
+        lbltelefono = new JLabel("TELEFONO:");
+        txttelefono = new JTextField();
 
-        lblcontraseña=new JLabel("Contraseña");
+        lblcontraseña = new JLabel("Contraseña");
         txtcontraeña = new JTextField();
+
+        lblusername = new JLabel("Usuario:");
+        txtusername = new JTextField();
 
         panelFormulario.add(lblnombreCompleto);
         panelFormulario.add(txtnombreCompleto);
@@ -61,38 +68,47 @@ public class VentanaConductor extends JPanel {
         panelFormulario.add(lblcontraseña);
         panelFormulario.add(txtcontraeña);
 
-        btnGuardar=new JButton("Guardar");
+        panelFormulario.add(lblusername);
+        panelFormulario.add(txtusername);
+
+        btnGuardar = new JButton("Guardar");
 //        btnVolver=new JButton("Volver");
 
         panelBotones = new JPanel();
         panelBotones.add(btnGuardar);
 //        panelBotones.add(btnVolver);
 
-        add(panelTitulo,BorderLayout.NORTH);
-        add(panelFormulario,BorderLayout.CENTER);
-        add(panelBotones,BorderLayout.SOUTH);
+        add(panelTitulo, BorderLayout.NORTH);
+        add(panelFormulario, BorderLayout.CENTER);
+        add(panelBotones, BorderLayout.SOUTH);
 
-        btnGuardar.addActionListener(e -> guardarConductor());
-//        btnVolver.addActionListener(e -> dispose());
+        btnGuardar.addActionListener(e -> {
+            User newUser = new User();
+            newUser.setUsername(getUsername());
+            newUser.setName(getNombreCompleto());
+            newUser.setRole(getRol());
+            newUser.setPhone(getTelefono());
+            
+            controller.saveUser(newUser, getPassword());
+            
+            txtusername.setText("");
+            txtcontraeña.setText("");
+            txtrol.setText("");
+            txtnombreCompleto.setText("");
+            txttelefono.setText("");
+        });
+        
+        //btnVolver.addActionListener(e -> dispose());
         setVisible(true);
+    }
+    public String getUsername() {return txtusername.getText();}
+    public String getPassword() {return txtcontraeña.getText();}
+    public String getRol() {return txtrol.getText();}
+    public String getNombreCompleto() {return txtnombreCompleto.getText();}
+    public String getTelefono() {return txttelefono.getText();}
+
 
 }
-    private void guardarConductor(){
-        String nombreCompleto =txtnombreCompleto.getText();
-        String Licencia=txtrol.getText();
-        String Telefono =txttelefono.getText();
-        String contraseña = txtcontraeña.getText();
 
-
-        JOptionPane.showMessageDialog(this,
-                "Conductor guardado correctamente\n" +
-                        "Nombre: " + nombreCompleto + "\n" +
-                        "Rol : " + Licencia+ "\n" +
-                        "Telefono: " + Telefono + "\n"+
-                        "Contraseña Agregada");
-
-        }
-
-    }
 
 
