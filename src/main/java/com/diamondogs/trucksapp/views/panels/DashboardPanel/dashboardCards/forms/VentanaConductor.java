@@ -5,15 +5,17 @@ import java.awt.*;
 public class VentanaConductor extends JPanel {
     private JLabel lblTitulo;
 
-    private JLabel lblrut;
-    private JLabel lblnombreCompleto;
-    private JLabel lbllicencia;
-    private JLabel lbltelefono;
 
-    private  JTextField txtrut;
+    private JLabel lblnombreCompleto;
+    private JLabel lblrol;
+    private JLabel lbltelefono;
+    private JLabel lblcontraseña;
+
+
     private JTextField txtnombreCompleto;
-    private JTextField txtlicencia;
+    private JTextField txtrol;
     private JTextField txttelefono;
+    private JTextField txtcontraeña;
 
     private JButton btnGuardar;
     private JButton btnVolver;
@@ -38,26 +40,26 @@ public class VentanaConductor extends JPanel {
         lblnombreCompleto=new JLabel("Nombre Completo:");
         txtnombreCompleto=new JTextField();
 
-        lblrut=new JLabel("Rut: ");
-        txtrut=new JTextField();
-
-        lbllicencia=new JLabel("Tipo de Licencia:");
-        txtlicencia=new JTextField();
+        lblrol=new JLabel("Rol:");
+        txtrol=new JTextField();
 
         lbltelefono=new JLabel("TELEFONO:");
         txttelefono=new JTextField();
 
+        lblcontraseña=new JLabel("Contraseña");
+        txtcontraeña = new JTextField();
+
         panelFormulario.add(lblnombreCompleto);
         panelFormulario.add(txtnombreCompleto);
 
-        panelFormulario.add(lblrut);
-        panelFormulario.add(txtrut);
-
-        panelFormulario.add(lbllicencia);
-        panelFormulario.add(txtlicencia);
+        panelFormulario.add(lblrol);
+        panelFormulario.add(txtrol);
 
         panelFormulario.add(lbltelefono);
         panelFormulario.add(txttelefono);
+
+        panelFormulario.add(lblcontraseña);
+        panelFormulario.add(txtcontraeña);
 
         btnGuardar=new JButton("Guardar");
 //        btnVolver=new JButton("Volver");
@@ -77,17 +79,17 @@ public class VentanaConductor extends JPanel {
 }
     private void guardarConductor(){
         String nombreCompleto =txtnombreCompleto.getText();
-        String RUT = txtrut.getText();
-        String Licencia=txtlicencia.getText();
+        String Licencia=txtrol.getText();
         String Telefono =txttelefono.getText();
+        String contraseña = txtcontraeña.getText();
 
 
         JOptionPane.showMessageDialog(this,
                 "Conductor guardado correctamente\n" +
                         "Nombre: " + nombreCompleto + "\n" +
-                        "Rut: " + RUT + "\n" +
-                        "Licencia Tipo : " + Licencia+ "\n" +
-                        "Telefono: " + Telefono + "\n" );
+                        "Rol : " + Licencia+ "\n" +
+                        "Telefono: " + Telefono + "\n"+
+                        "Contraseña Agregada");
 
         }
 
