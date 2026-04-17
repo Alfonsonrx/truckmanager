@@ -6,16 +6,18 @@ public class User {
     private String name;
     private String role;
     private String phone;
+    private String password;
 
 
     public User() {
     }
 
-    public User(int id, String name, String username, String role, String phone) {
+    public User(int id, String name, String username, String role, String phone,  String password) {
         this.username = username;
         this.name = name;
         this.role = role;
         this.phone = phone;
+        this.password = password;
     }
 
     public int getId() {
@@ -33,6 +35,7 @@ public class User {
     public String getPhone() {
         return phone;
     }
+    public String getPassword() {return password;}
 
     public void setId(int id) {
         this.id = id;
@@ -49,4 +52,5 @@ public class User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    public void setPassword(String password) {this.password = password;}
 }
