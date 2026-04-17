@@ -35,4 +35,30 @@ public class UserController {
         };
         worker.execute();
     }
+
+    public void saveUser(User user, String password) {
+        SwingWorker<Boolean, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Boolean doInBackground() {
+                // Llama al repositorio
+                return repository.save(user, password);
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    boolean success = get();
+                    if (success) {
+                        JOptionPane.showMessageDialog(null, "Usuario guardado exitosamente");
+                        loadAndShowUsers(); // Recarga la tabla de usuarios en la vista
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al guardar el usuario", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        worker.execute();
+    }
 }
