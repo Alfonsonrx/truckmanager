@@ -107,6 +107,10 @@ public class TruckController implements ActionListener {
         };
         worker.execute();
     }
+
+    public void loadOneTruck(int id){
+        Truck truck = new Truck();
+    }
     }
 
 
