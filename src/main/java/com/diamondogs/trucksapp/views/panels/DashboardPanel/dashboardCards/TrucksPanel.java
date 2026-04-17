@@ -1,5 +1,6 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
+
 import com.diamondogs.trucksapp.controller.TruckController;
 import com.diamondogs.trucksapp.model.Truck;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs.TruckEditDialog;
@@ -17,7 +18,6 @@ public class TrucksPanel extends JPanel {
     private final JTable truckTable = new JTable();
     private final String[] columnNames = {"ID", "Patente", "Conductor", "Kilometros","Color","Mantenimiento", "Acciones"};
 
-    private JPanel panelBotones;
     private JButton btnGuardar;
 
     public TrucksPanel() {
@@ -29,6 +29,9 @@ public class TrucksPanel extends JPanel {
         rootPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JScrollPane tableScrollPane = new JScrollPane(truckTable);
+        tableScrollPane.setPreferredSize(new Dimension(0, 250)); // Limit table height
+        tableScrollPane.setMinimumSize(new Dimension(0, 200));
+        tableScrollPane.setMaximumSize(new Dimension(0, 500));
         setupTable();
 
         // --- CONEXIÓN MVC ---
@@ -48,7 +51,7 @@ public class TrucksPanel extends JPanel {
 
         btnGuardar = new JButton("Guardar");
 
-        panelBotones = new JPanel();
+        JPanel panelBotones = new JPanel();
         panelBotones.add(btnGuardar);
 
         rootPanel.add(new JLabel("Gestión de Camiones"), BorderLayout.NORTH);
@@ -69,8 +72,14 @@ public class TrucksPanel extends JPanel {
         truckTable.getColumn("Acciones").setCellRenderer(new ButtonRenderer("Editar"));
         truckTable.getColumn("Acciones").setCellEditor(new ButtonEditor("Editar", this::editTruck));
 
-        truckTable.getColumn("Acciones").setMaxWidth(80);
+        truckTable.getColumn("Acciones").setMaxWidth(90);
+        truckTable.getColumn("Acciones").setMinWidth(70);
+        truckTable.getColumn("Acciones").setPreferredWidth(80);
+
+        truckTable.setRowHeight(30);
     }
+
+    // Funcion ejecutada al momento de clickear editar
     private void editTruck(int row) {
         DefaultTableModel model = (DefaultTableModel) truckTable.getModel();
         int truckId = (int) model.getValueAt(row, 0);   // Get ID from first column

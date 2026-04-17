@@ -1,5 +1,6 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs;
 
+import com.diamondogs.trucksapp.model.Truck;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
 
 import javax.swing.*;
@@ -11,16 +12,18 @@ public class TruckEditDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JPanel panelForm;
+    private int truckId;
 
     public TruckEditDialog(Component parent, int truckId) {
         super((Frame) SwingUtilities.getWindowAncestor(parent), "Editar Camion", true);
+        this.truckId = truckId;
+
         setSize(600, 500);
         setLocationRelativeTo(parent);
 
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -54,6 +57,10 @@ public class TruckEditDialog extends JDialog {
         panelForm.add(formCamion, BorderLayout.CENTER);
     }
 
+    public int getTruckId() {
+        return this.truckId;
+    }
+
     private void onOK() {
         // add your code here
         dispose();
@@ -62,5 +69,9 @@ public class TruckEditDialog extends JDialog {
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    public void setTruck(Truck truck){
+
     }
 }
