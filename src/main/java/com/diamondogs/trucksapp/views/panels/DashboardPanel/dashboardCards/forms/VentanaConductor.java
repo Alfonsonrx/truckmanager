@@ -22,18 +22,18 @@ public class VentanaConductor extends JPanel {
     private JPanel panelFormulario;
     private JPanel panelBotones;
 
-    public VentanaConductor(){
+    public VentanaConductor(String title_label, String title_form){
         setSize(600,450);
         setLayout(new BorderLayout());
 
         panelTitulo = new JPanel();
-        lblTitulo = new JLabel("REGISTRO DE CONDUCTORES");
-        lblTitulo.setFont(new Font("Arial",Font.BOLD,16));
+        lblTitulo = new JLabel(title_label);
+        lblTitulo.setFont(new Font("Arial",Font.BOLD,24));
         panelTitulo.add(lblTitulo);
 
         panelFormulario = new JPanel();
         panelFormulario.setLayout(new GridLayout(6,2,10,10));
-        panelFormulario.setBorder(BorderFactory.createTitledBorder("Ingrese los datos del Conductor"));
+        panelFormulario.setBorder(BorderFactory.createTitledBorder(title_form));
 
         lblnombreCompleto=new JLabel("Nombre Completo:");
         txtnombreCompleto=new JTextField();
