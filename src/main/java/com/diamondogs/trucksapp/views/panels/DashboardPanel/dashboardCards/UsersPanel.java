@@ -48,7 +48,7 @@ public class UsersPanel extends JPanel {
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(tablePanel, BorderLayout.NORTH);
 
-        VentanaConductor createDriver = new VentanaConductor(userController);
+        VentanaConductor createDriver = new VentanaConductor("REGISTRO DE CONDUCTORES", "Ingrese los datos del Conductor");
         centerPanel.add(createDriver, BorderLayout.SOUTH);
 
         rootPanel.add(userListLabel, BorderLayout.NORTH);

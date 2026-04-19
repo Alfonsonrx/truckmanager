@@ -2,17 +2,14 @@ package com.diamondogs.trucksapp.controller;
 
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.repositories.UserRepository;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.TrucksPanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.UsersPanel;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaConductor;
 
 import javax.swing.*;
 import java.util.List;
 
 public class UserController {
-    private VentanaConductor vistaConductor;
-    private UserRepository repository = new UserRepository();
-    private UsersPanel vista; // Vista
+    private final UserRepository repository = new UserRepository();
+    private final UsersPanel vista; // Vista
 
     public UserController(UsersPanel vista) {
         this.vista = vista;
@@ -38,6 +35,7 @@ public class UserController {
         };
         worker.execute();
     }
+
     public void saveUser(User user, String password) {
         SwingWorker<Boolean, Void> worker = new SwingWorker<>() {
             @Override
@@ -63,5 +61,4 @@ public class UserController {
         };
         worker.execute();
     }
-
 }

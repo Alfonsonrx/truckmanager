@@ -1,4 +1,5 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.utils;
+import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -15,8 +16,11 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
         this.action = action;
         button = new JButton(text);
         button.addActionListener(e -> {
-            action.accept(currentRow);
-            fireEditingStopped();
+            int row = currentRow;
+            fireEditingStopped();// Stop editing FIRST
+            SwingUtilities.invokeLater(() -> {
+                action.accept(row);   // Then open dialog
+            });
         });
     }
 

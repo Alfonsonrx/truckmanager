@@ -1,12 +1,24 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
+import com.diamondogs.trucksapp.controller.MaintenanceController;
+import com.diamondogs.trucksapp.model.Maintenance;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs.MaintenanceEditDialog;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs.TruckEditDialog;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormMantenimiento;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonEditor;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonRenderer;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class MaintenancePanel extends JPanel {
     private JPanel rootPanel;
-    private final JTable truckTable = new JTable();
-    private final String[] columnNames = {"ID", "Camion", "Fecha", "Tipo","Descripcion"};
+    private final JTable maintenanceTable = new JTable();
+    private final String[] columnNames = {"ID", "Camion", "Fecha", "Tipo","Descripcion","Acciones"};
+
+    private JButton btnGuardar;
 
     public MaintenancePanel() {
         initializeComponents();
@@ -16,14 +28,86 @@ public class MaintenancePanel extends JPanel {
         rootPanel = new JPanel(new BorderLayout());
         rootPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JScrollPane tableScrollPane = new JScrollPane(truckTable);
-
+        JScrollPane tableScrollPane = new JScrollPane(maintenanceTable);
+        tableScrollPane.setPreferredSize(new Dimension(0, 250)); // Limit table height
+        tableScrollPane.setMinimumSize(new Dimension(0, 200));
+        tableScrollPane.setMaximumSize(new Dimension(0, 500));
+        setupTable();
 
         // --- CONEXIÓN MVC (A realizar) ---
+        // 1. Creamos la instancia del panel de registro
+        FormMantenimiento formMantenimiento = new FormMantenimiento("Registro de mantenimientos","Ingrese los datos del mantenimiento");
+
+        // 2. Creamos el controlador pasándole ESA instancia
+        MaintenanceController maintenanceController = new MaintenanceController(formMantenimiento, this);
+        maintenanceController.loadAndShowMaintenances();
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(tableScrollPane, BorderLayout.CENTER);
+
+        // 3. Agregamos el formulario (ya conectado) al panel
+        centerPanel.add(formMantenimiento.getRootPanel(), BorderLayout.SOUTH);
+
+        btnGuardar = new JButton("Guardar");
+
+        JPanel panelBotones = new JPanel();
+        panelBotones.add(btnGuardar);
+
+        rootPanel.add(new JLabel("Gestión de Mantenimiento"), BorderLayout.NORTH);
+        rootPanel.add(centerPanel, BorderLayout.CENTER);
+        rootPanel.add(panelBotones, BorderLayout.SOUTH);
+    }
+
+    private void setupTable() {
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 5;
+            }
+        };
+        maintenanceTable.setModel(model);
+
+
+        maintenanceTable.getColumn("Acciones").setCellRenderer(new ButtonRenderer("Editar"));
+        maintenanceTable.getColumn("Acciones").setCellEditor(new ButtonEditor("Editar", this::editMaintenance));
+
+        maintenanceTable.getColumn("Acciones").setMaxWidth(90);
+        maintenanceTable.getColumn("Acciones").setMinWidth(70);
+        maintenanceTable.getColumn("Acciones").setPreferredWidth(80);
+
+        maintenanceTable.setRowHeight(30);
+    }
+
+    private void editMaintenance(int row) {
+        DefaultTableModel model = (DefaultTableModel) maintenanceTable.getModel();
+        int maintenanceId = (int) model.getValueAt(row, 0);   // Get ID from first column
+
+        // Abre el dialog para editar, se pasa el id para los procesos correspondientes
+        new MaintenanceEditDialog(this, maintenanceId).setVisible(true);
+    }
+
+    public void updateTable(List<Maintenance> maintenances) {
+        if (maintenances == null) return;
+
+        DefaultTableModel model = (DefaultTableModel) maintenanceTable.getModel();
+        model.setRowCount(0);
+
+        for (Maintenance maintenance : maintenances) {
+            model.addRow(new Object[]{
+                    maintenance.getId(),
+                    maintenance.getTruck(),
+                    maintenance.getDate(),
+                    maintenance.getMaintenanceType(),
+                    maintenance.getDescription()
+            });
+        }
     }
 
     public JPanel getRootPanel() {
         return rootPanel;
     }
 
+    public JButton getBtnGuardar() {
+        return btnGuardar;
+    }
 }
