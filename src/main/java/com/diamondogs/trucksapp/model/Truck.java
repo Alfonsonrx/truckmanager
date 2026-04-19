@@ -28,7 +28,7 @@ public class Truck {
     }
 
     public boolean requiresMaintenance() {
-        return this.kilometers >= 5000;
+        return this.kilometers > 5000;
     }
 
     public int getId() {
