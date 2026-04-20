@@ -113,4 +113,20 @@ public class UserController implements ActionListener {
             JOptionPane.showMessageDialog(formUsuario, "Error: " + ex.getMessage());
         }
     }
+
+    public void processDisableUser(int is_active, int userId) {
+        try {
+            // Eliminar
+            boolean exito = repositorio.disable_user(is_active, userId);
+
+            if (exito) {
+                JOptionPane.showMessageDialog(vista, String.format("¡Deshabilitado usuario Nro. %d en MySQL!",userId));
+                loadAndShowUsers(); // Refresh the table
+            } else {
+                JOptionPane.showMessageDialog(vista, "Error al deshabilitar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(vista, "Error: " + ex.getMessage());
+        }
+    }
 }

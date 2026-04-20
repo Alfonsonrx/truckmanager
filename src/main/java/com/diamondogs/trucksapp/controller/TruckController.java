@@ -151,4 +151,20 @@ public class TruckController implements ActionListener {
             JOptionPane.showMessageDialog(formCamion, "Error: " + ex.getMessage());
         }
     }
+
+    public void processDisableTruck(int is_active,int truckId) {
+        try {
+            // Eliminar
+            boolean exito = repositorio.disable_truck(is_active, truckId);
+
+            if (exito) {
+                JOptionPane.showMessageDialog(vista, String.format("¡Deshabilitado camion Nro. %d en MySQL!",truckId));
+                loadAndShowTrucks(); // Refresh the table
+            } else {
+                JOptionPane.showMessageDialog(vista, "Error al deshabilitar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(vista, "Error: " + ex.getMessage());
+        }
+    }
 }

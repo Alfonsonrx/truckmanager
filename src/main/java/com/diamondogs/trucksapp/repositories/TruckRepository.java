@@ -12,7 +12,7 @@ public class TruckRepository {
 
     public static List<Truck> findALl() {
         List<Truck> trucks = new ArrayList<Truck>();
-        String sql = "SELECT id, plate, brand, model, color, year, latest_maintenance, kilometers, driver FROM truck;";
+        String sql = "SELECT id, plate, brand, model, color, year, latest_maintenance, kilometers, driver, is_active FROM truck;";
         try (Connection conn = DatabaseConfig.getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet res_set = pstmt.executeQuery();
@@ -28,6 +28,7 @@ public class TruckRepository {
                 truck.setLatest_maintenance(res_set.getDate("latest_maintenance"));
                 truck.setKilometers(res_set.getInt("kilometers"));
                 truck.setDriver(res_set.getInt("driver"));
+                truck.setIs_active(res_set.getInt("is_active") == 1 ? "Si" : "No");
                 trucks.add(truck);
             }
         } catch (SQLException ex) {
@@ -137,14 +138,15 @@ public class TruckRepository {
         }
     }
 
-    public boolean disable_truck(int t_id) {
+    public boolean disable_truck(int is_active,int t_id) {
         String sql = "UPDATE truck " +
-                "SET is_active=0 " +
+                "SET is_active=? " +
                 "WHERE id=?;";
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)){
 
-            ps.setInt(1, t_id);
+            ps.setInt(1, is_active);
+            ps.setInt(2, t_id);
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;

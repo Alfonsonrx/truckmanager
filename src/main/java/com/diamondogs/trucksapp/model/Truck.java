@@ -12,6 +12,7 @@ public class Truck {
     private Date latest_maintenance;
     private int kilometers;
     private int driver;
+    private String is_active;
 
     public Truck() {}
 
@@ -58,6 +59,7 @@ public class Truck {
     public int getDriver() {
         return driver;
     }
+    public String getIs_active() {return is_active;}
 
     public void setId(int id) {
         this.id = id;
@@ -85,6 +87,9 @@ public class Truck {
     }
     public void setDriver(int driver) {
         this.driver = driver;
+    }
+    public void setIs_active(String is_active) {
+        this.is_active = is_active;
     }
 
 }

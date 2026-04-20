@@ -19,7 +19,7 @@ public class MaintenancePanel extends JPanel {
     private final MaintenanceController controller;
 
     private final JTable maintenanceTable = new JTable();
-    private final String[] columnNames = {"ID", "Camion", "Fecha", "Tipo","Descripcion","Acciones"};
+    private final String[] columnNames = {"ID", "Camion", "Fecha", "Tipo","Descripcion","Editar", "Eliminar"};
 
 //    private JButton btnGuardar;
 
@@ -60,7 +60,7 @@ public class MaintenancePanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0){
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5;
+                return column == 5 || column == 6;
             }
         };
         maintenanceTable.setModel(model);
@@ -70,11 +70,17 @@ public class MaintenancePanel extends JPanel {
         maintenanceTable.getColumn("Fecha").setMaxWidth(80);
         maintenanceTable.getColumn("Tipo").setMaxWidth(100);
 
-        maintenanceTable.getColumn("Acciones").setCellRenderer(new ButtonRenderer("Editar"));
-        maintenanceTable.getColumn("Acciones").setCellEditor(new ButtonEditor("Editar", this::editMaintenance));
-        maintenanceTable.getColumn("Acciones").setMaxWidth(90);
-        maintenanceTable.getColumn("Acciones").setMinWidth(70);
-        maintenanceTable.getColumn("Acciones").setPreferredWidth(80);
+        maintenanceTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+        maintenanceTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editMaintenance));
+        maintenanceTable.getColumn("Editar").setMaxWidth(90);
+        maintenanceTable.getColumn("Editar").setMinWidth(70);
+        maintenanceTable.getColumn("Editar").setPreferredWidth(80);
+
+        maintenanceTable.getColumn("Eliminar").setCellRenderer(new ButtonRenderer("Eliminar"));
+        maintenanceTable.getColumn("Eliminar").setCellEditor(new ButtonEditor("Eliminar", this::removeMaintenance));
+        maintenanceTable.getColumn("Eliminar").setMaxWidth(90);
+        maintenanceTable.getColumn("Eliminar").setMinWidth(70);
+        maintenanceTable.getColumn("Eliminar").setPreferredWidth(80);
 
         maintenanceTable.setRowHeight(30);
     }
@@ -87,6 +93,20 @@ public class MaintenancePanel extends JPanel {
         MaintenanceEditDialog dialog = new MaintenanceEditDialog(this, maintenanceId, controller);
         dialog.loadMaintenanceData();
         dialog.setVisible(true);
+    }
+
+    private void removeMaintenance(int row) {
+        DefaultTableModel model = (DefaultTableModel) maintenanceTable.getModel();
+        int maintenanceId = (int) model.getValueAt(row, 0);   // Get ID from first column
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de eliminar este mantenimiento?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            controller.processDeleteMaintenance(maintenanceId);
+        }
     }
 
     public void updateTable(List<Maintenance> maintenances) {

@@ -14,7 +14,7 @@ public class UserRepository {
 
     public List<User> findALl() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, username, name, role FROM user;";
+        String sql = "SELECT id, username, name, role, is_active FROM user;";
 
         try (Connection conn = DatabaseConfig.getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -26,6 +26,8 @@ public class UserRepository {
                 user.setUsername(res_set.getString("username"));
                 user.setName(res_set.getString("name"));
                 user.setRole(res_set.getString("role"));
+                user.setIs_active(res_set.getInt("is_active") == 1 ? "Si" : "No");
+
                 users.add(user);
             }
         } catch (SQLException ex) {
@@ -104,14 +106,15 @@ public class UserRepository {
         }
     }
 
-    public boolean disable_user(int u_id) {
+    public boolean disable_user(int is_active,int u_id) {
         String sql = "UPDATE user " +
-                "SET is_active=0 " +
+                "SET is_active=? " +
                 "WHERE id=?;";
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)){
 
-            ps.setInt(1, u_id);
+            ps.setInt(1, is_active);
+            ps.setInt(2, u_id);
 
             int resultado = ps.executeUpdate();
             return resultado > 0;
