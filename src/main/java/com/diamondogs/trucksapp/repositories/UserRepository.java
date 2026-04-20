@@ -84,8 +84,8 @@ public class UserRepository {
     }
 
     public boolean update(User user, int u_id) {
-        boolean passwordChange = user.getPassword().isEmpty();
-        String sqlPw = passwordChange ? "password=?" : "";
+        boolean passwordChange = !user.getPassword().isEmpty();
+        String sqlPw = passwordChange ? "password=? " : "";
         String sql = "UPDATE user " +
                 "SET username=?, name=?, phone=?, `role`=? " + sqlPw +
                 "WHERE id=?;";

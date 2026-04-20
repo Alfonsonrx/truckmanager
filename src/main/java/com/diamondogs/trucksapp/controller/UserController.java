@@ -120,7 +120,7 @@ public class UserController implements ActionListener {
             boolean exito = repositorio.disable_user(is_active, userId);
 
             if (exito) {
-                JOptionPane.showMessageDialog(vista, String.format("¡Deshabilitado usuario Nro. %d en MySQL!",userId));
+                JOptionPane.showMessageDialog(vista, String.format("¡%s usuario Nro. %d en MySQL!",is_active == 1 ? "Habilitado" :"Inhabilitado",userId));
                 loadAndShowUsers(); // Refresh the table
             } else {
                 JOptionPane.showMessageDialog(vista, "Error al deshabilitar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);

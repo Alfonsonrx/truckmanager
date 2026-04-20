@@ -158,7 +158,7 @@ public class TruckController implements ActionListener {
             boolean exito = repositorio.disable_truck(is_active, truckId);
 
             if (exito) {
-                JOptionPane.showMessageDialog(vista, String.format("¡Deshabilitado camion Nro. %d en MySQL!",truckId));
+                JOptionPane.showMessageDialog(vista, String.format("¡%s camion Nro. %d en MySQL!",is_active == 1 ? "Habilitado" :"Inhabilitado",truckId));
                 loadAndShowTrucks(); // Refresh the table
             } else {
                 JOptionPane.showMessageDialog(vista, "Error al deshabilitar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);

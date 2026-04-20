@@ -58,7 +58,7 @@ public class UsersPanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5 || column == 6;
+                return column == 6 || column == 7;
             }
         };
         userTable.setModel(model);
@@ -118,7 +118,7 @@ public class UsersPanel extends JPanel {
     private void toggleUserState(int row) {
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
         int userId = (int) model.getValueAt(row, 0);   // Get ID from first column
-        String currentState = (String) model.getValueAt(row, 4);   // Get ID from first column
+        String currentState = (String) model.getValueAt(row, 5);
 
         boolean is_active = !"Si".equalsIgnoreCase(currentState);
 
