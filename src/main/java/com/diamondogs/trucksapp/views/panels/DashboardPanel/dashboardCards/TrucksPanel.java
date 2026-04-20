@@ -10,18 +10,28 @@ import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonRenderer
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.List;
 
 public class TrucksPanel extends JPanel {
     private JPanel rootPanel;
+    private final VentanaCamion formCamion;
+    private final TruckController truckController;
+
     private final JTable truckTable = new JTable();
     private final String[] columnNames = {"ID", "Patente", "Conductor", "Kilometros","Color","Mantenimiento", "Acciones"};
 
-    private JButton btnGuardar;
-
     public TrucksPanel() {
+        // --- CONEXIÓN MVC ---
+        // 1. Creamos la instancia del panel de registro
+        formCamion = new VentanaCamion("Registro de camiones","Ingrese los datos del camion", true);
+
+        // 2. Creamos el controlador pasándole ESA instancia
+        // (Esto hará que el botón de formCamion empiece a funcionar)
+        truckController = new TruckController(formCamion, this);
         initializeComponents();
+        truckController.loadAndShowTrucks();
     }
 
     private void initializeComponents() {
@@ -34,29 +44,13 @@ public class TrucksPanel extends JPanel {
         tableScrollPane.setMaximumSize(new Dimension(0, 500));
         setupTable();
 
-        // --- CONEXIÓN MVC ---
-        // 1. Creamos la instancia del panel de registro
-        VentanaCamion formCamion = new VentanaCamion("Registro de camiones","Ingrese los datos del camion");
-
-        // 2. Creamos el controlador pasándole ESA instancia
-        // (Esto hará que el botón de formCamion empiece a funcionar)
-        TruckController truckController = new TruckController(formCamion, this);
-        truckController.loadAndShowTrucks();
-
+        // 2.a Agregamos el formulario (ya conectado) al panel
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(tableScrollPane, BorderLayout.CENTER);
-
-        // 3. Agregamos el formulario (ya conectado) al panel
         centerPanel.add(formCamion, BorderLayout.SOUTH);
-
-        btnGuardar = new JButton("Guardar");
-
-        JPanel panelBotones = new JPanel();
-        panelBotones.add(btnGuardar);
 
         rootPanel.add(new JLabel("Gestión de Camiones"), BorderLayout.NORTH);
         rootPanel.add(centerPanel, BorderLayout.CENTER);
-        rootPanel.add(panelBotones, BorderLayout.SOUTH);
     }
 
     private void setupTable() {
@@ -68,6 +62,10 @@ public class TrucksPanel extends JPanel {
         };
         truckTable.setModel(model);
 
+        TableColumn idColumn = truckTable.getColumn("ID");
+        idColumn.setMinWidth(20);
+        idColumn.setMaxWidth(30);
+
         // Agregando Boton de editar
         truckTable.getColumn("Acciones").setCellRenderer(new ButtonRenderer("Editar"));
         truckTable.getColumn("Acciones").setCellEditor(new ButtonEditor("Editar", this::editTruck));
@@ -78,20 +76,6 @@ public class TrucksPanel extends JPanel {
 
         truckTable.setRowHeight(30);
     }
-
-    // Funcion ejecutada al momento de clickear editar
-    private void editTruck(int row) {
-        DefaultTableModel model = (DefaultTableModel) truckTable.getModel();
-        int truckId = (int) model.getValueAt(row, 0);   // Get ID from first column
-
-        // Abre el dialog para editar, se pasa el id para los procesos correspondientes
-        new TruckEditDialog(this, truckId).setVisible(true);
-    }
-
-    public JPanel getRootPanel() {
-        return rootPanel;
-    }
-
     public void updateTable(List<Truck> trucks) {
         if (trucks == null) return;
 
@@ -110,7 +94,19 @@ public class TrucksPanel extends JPanel {
         }
     }
 
-    public JButton getBtnGuardar() {
-        return btnGuardar;
+    // Funcion ejecutada al momento de clickear editar
+    private void editTruck(int row) {
+        DefaultTableModel model = (DefaultTableModel) truckTable.getModel();
+        int truckId = (int) model.getValueAt(row, 0);   // Get ID from first column
+
+        // Abre el dialog para editar, se pasa el id para los procesos correspondientes
+        TruckEditDialog dialog = new TruckEditDialog(this, truckId, truckController);
+        dialog.loadTruckData();
+        dialog.setVisible(true);
     }
+
+    public JPanel getRootPanel() {
+        return rootPanel;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs;
 
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
+import com.diamondogs.trucksapp.controller.UserController;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaConductor;
 
 import javax.swing.*;
@@ -12,11 +12,15 @@ public class UserEditDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JPanel panelForm;
-    private int userId;
 
-    public UserEditDialog(Component parent, int userId) {
+    private final VentanaConductor formConductor;
+    private final int userId;
+    private final UserController controller;
+
+    public UserEditDialog(Component parent, int userId, UserController controller) {
         super((Frame) SwingUtilities.getWindowAncestor(parent), "Editar Usuario", true);
         this.userId = userId;
+        this.controller = controller;
 
         setSize(600, 500);
         setMinimumSize(new Dimension(500, 400));
@@ -31,7 +35,6 @@ public class UserEditDialog extends JDialog {
                 onOK();
             }
         });
-
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -53,12 +56,16 @@ public class UserEditDialog extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        VentanaConductor formUsuario = new VentanaConductor("REGISTRO DE CONDUCTORES", "Ingrese los datos del Conductor");
-        panelForm.add(formUsuario, BorderLayout.CENTER);
+        this.formConductor = new VentanaConductor("Actualizar Usuario", "Ingrese los nuevos datos");
+        panelForm.add(formConductor, BorderLayout.CENTER);
+    }
+
+    public void loadUserData() {
+        controller.loadUserForEdit(userId, formConductor);
     }
 
     private void onOK() {
-        // add your code here
+        controller.makeUserUpdate(userId, formConductor);
         dispose();
     }
 

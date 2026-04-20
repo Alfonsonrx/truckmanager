@@ -3,24 +3,71 @@ package com.diamondogs.trucksapp.controller;
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.repositories.UserRepository;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.UsersPanel;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaConductor;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class UserController {
-    private final UserRepository repository = new UserRepository();
-    private final UsersPanel vista; // Vista
+public class UserController implements ActionListener {
 
-    public UserController(UsersPanel vista) {
+    private final VentanaConductor vistaUsuario;
+    private final UserRepository repositorio;
+    private final UsersPanel vista;
+
+    // Constructor que RECIBE la vista y activa el botón
+    public UserController(VentanaConductor vistaUsuario, UsersPanel vista) {
+        this.vistaUsuario = vistaUsuario;
+        this.repositorio = new UserRepository();
         this.vista = vista;
+
+        if (this.vistaUsuario.getBtnGuardar() != null) {
+            this.vistaUsuario.getBtnGuardar().addActionListener(this);
+            System.out.println("Controlador: Botón de guardado vinculado correctamente.");
+        }
     }
 
-    // In UserController.java
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == vistaUsuario.getBtnGuardar()) {
+            procesarGuardadoUsuario();
+        }
+    }
+
+    private void procesarGuardadoUsuario() {
+        try {
+            // Extraer datos de la vista
+            String username = vistaUsuario.getUsername();
+            String nombre = vistaUsuario.getNombreCompleto();
+            String rol = vistaUsuario.getRol();
+            String telefono = vistaUsuario.getTelefono();
+            String clave = vistaUsuario.getClave();
+
+            // Crear objeto Modelo
+            User nuevo = new User(0, nombre, username, rol, telefono, clave);
+
+            // Guardar
+            boolean exito = repositorio.save(nuevo);
+
+            if (exito) {
+                JOptionPane.showMessageDialog(vistaUsuario, "¡Guardado en MySQL!");
+                loadAndShowUsers(); // Refresh the table
+                vistaUsuario.clearForm();
+            } else {
+                JOptionPane.showMessageDialog(vistaUsuario, "Error al guardar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(vistaUsuario, "Datos inválidos: " + ex.getMessage());
+        }
+    }
+
     public void loadAndShowUsers() {
         SwingWorker<List<User>, Void> worker = new SwingWorker<>() {
             @Override
             protected List<User> doInBackground() {
-                return repository.findALl();
+                return repositorio.findALl();
             }
 
             @Override
@@ -29,36 +76,41 @@ public class UserController {
                     List<User> users = get();
                     vista.updateTable(users);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Failed to load users");
+                    JOptionPane.showMessageDialog(null, "Failed to load users!");
                 }
             }
         };
         worker.execute();
     }
 
-    public void saveUser(User user, String password) {
-        SwingWorker<Boolean, Void> worker = new SwingWorker<>() {
-            @Override
-            protected Boolean doInBackground() {
-                // Llama al repositorio
-                return repository.save(user, password);
-            }
+    public void loadUserForEdit(int userId, VentanaConductor formUsuario) {
+        User user = repositorio.findOneUser(userId);
+        if (user != null) {
+            formUsuario.fillForm(user);
+        }
+    }
 
-            @Override
-            protected void done() {
-                try {
-                    boolean success = get();
-                    if (success) {
-                        JOptionPane.showMessageDialog(null, "Usuario guardado exitosamente");
-                        loadAndShowUsers(); // Recarga la tabla de usuarios en la vista
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Error al guardar el usuario", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+    public void makeUserUpdate(int userId, VentanaConductor formUsuario) {
+        try {
+            String username = formUsuario.getUsername();
+            String nombre = formUsuario.getNombreCompleto();
+            String rol = formUsuario.getRol();
+            String telefono = formUsuario.getTelefono();
+            String clave = formUsuario.getClave();
+
+            User editado = new User(userId, nombre, username, rol, telefono, clave);
+
+            // Guardar
+            boolean exito = repositorio.update(editado, userId);
+
+            if (exito) {
+                JOptionPane.showMessageDialog(vistaUsuario, String.format("¡Guardado la version nueva del usuario %d con username %s en MySQL!", userId, username));
+                loadAndShowUsers(); // Refresh the table
+            } else {
+                JOptionPane.showMessageDialog(vistaUsuario, "Error al guardar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        };
-        worker.execute();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(formUsuario, "Error: " + ex.getMessage());
+        }
     }
 }

@@ -1,7 +1,10 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms;
 
+import com.diamondogs.trucksapp.model.Truck;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class VentanaCamion extends JPanel {
     private JLabel lblTitulo;
@@ -25,13 +28,12 @@ public class VentanaCamion extends JPanel {
     private JTextField txtLatest_maintenance;
 
     private JButton btnGuardar;
-    private JButton btnVolver;
 
     private JPanel panelTitulo;
     private JPanel panelFormulario;
     private JPanel panelBotones;
 
-    public VentanaCamion(String title_label, String title_form) {
+    public VentanaCamion(String title_label, String title_form, boolean showSaveButton) {
         setSize(600, 450);
         setLayout(new BorderLayout());
 
@@ -94,22 +96,34 @@ public class VentanaCamion extends JPanel {
         panelFormulario.add(lblLatest_maintenance);
         panelFormulario.add(txtLatest_maintenance);
 
-//        btnGuardar = new JButton("Guardar");
-//
-//        panelBotones = new JPanel();
-//        panelBotones.add(btnGuardar);
+        btnGuardar = new JButton("Guardar");
+
+        panelBotones = new JPanel();
+        panelBotones.add(btnGuardar);
 
         add(panelTitulo, BorderLayout.NORTH);
         add(panelFormulario, BorderLayout.CENTER);
-//        add(panelBotones, BorderLayout.SOUTH);
+        add(panelBotones, BorderLayout.SOUTH);
+
+        if (btnGuardar != null) {
+            btnGuardar.setVisible(showSaveButton);
+        }
 
         setVisible(true);
     }
 
+    public VentanaCamion(String title, String formTitle) {
+        this(title, formTitle, false);   // Default = no button
+    }
+    public void addSaveListener(ActionListener listener) {
+        if (btnGuardar != null) {
+            btnGuardar.addActionListener(listener);
+        }
+    }
     // Getters para que el controlador acceda al botón y a los datos ingresados
-//    public JButton getBtnGuardar() {
-//        return btnGuardar;
-//    }
+    public JButton getBtnGuardar() {
+        return btnGuardar;
+    }
 
     public String getPatente() {
         return txtPatente.getText();
@@ -151,4 +165,29 @@ public class VentanaCamion extends JPanel {
     public void setConductor(String value) { txtConductor.setText(value); }
     public void setColor(String value) { txtColor.setText(value); }
     public void setLatest_maintenance(String value) { txtLatest_maintenance.setText(value); }
+
+    public void clearForm() {
+        txtPatente.setText("");
+        txtMarca.setText("");
+        txtModelo.setText("");
+        txtAnio.setText("");
+        txtKilometraje.setText("");
+        txtConductor.setText("");
+        txtColor.setText("");
+        txtLatest_maintenance.setText("");
+    }
+
+    public void fillForm(Truck truck) {
+        if (truck == null) return;
+
+        txtPatente.setText(truck.getPlate() != null ? truck.getPlate() : "");
+        txtMarca.setText(truck.getBrand() != null ? truck.getBrand() : "");
+        txtModelo.setText(truck.getModel() != null ? truck.getModel() : "");
+        txtAnio.setText( truck.getYear() != 0 ? String.valueOf(truck.getYear()) : "");
+        txtKilometraje.setText(truck.getKilometers() != 0 ? String.valueOf(truck.getKilometers()) : "");
+        txtConductor.setText(truck.getDriver() != 0 ? String.valueOf(truck.getDriver()) : "");
+        txtColor.setText(truck.getColor() != null ? truck.getColor() : "");
+        txtLatest_maintenance.setText(truck.getLatest_maintenance() != null ? String.valueOf(truck.getLatest_maintenance()) : "");
+
+    }
 }

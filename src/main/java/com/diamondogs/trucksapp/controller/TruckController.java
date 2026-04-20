@@ -25,15 +25,15 @@ public class TruckController implements ActionListener {
         this.vista = vista;
 
 
-        if (this.vista.getBtnGuardar() != null) {
-            this.vista.getBtnGuardar().addActionListener(this);
+        if (this.vistaCamion.getBtnGuardar() != null) {
+            this.vistaCamion.getBtnGuardar().addActionListener(this);
             System.out.println("Controlador: Botón de guardado vinculado correctamente.");
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == vista.getBtnGuardar()) {
+        if (e.getSource() == vistaCamion.getBtnGuardar()) {
             procesarGuardadoCamion();
         }
     }
@@ -67,6 +67,7 @@ public class TruckController implements ActionListener {
             if (exito) {
                 JOptionPane.showMessageDialog(vistaCamion, "¡Guardado en MySQL!");
                 loadAndShowTrucks(); // Refresh the table
+                vistaCamion.clearForm();
             } else {
                 JOptionPane.showMessageDialog(vistaCamion, "Error al guardar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -75,6 +76,7 @@ public class TruckController implements ActionListener {
             JOptionPane.showMessageDialog(vistaCamion, "Datos inválidos: " + ex.getMessage());
         }
     }
+
     public void ExcesoKilometraje(int kilometraje){
 
         if (kilometraje > 5000) {
@@ -87,6 +89,7 @@ public class TruckController implements ActionListener {
         }
 
     }
+
     public void loadAndShowTrucks() {
         SwingWorker<List<Truck>, Void> worker = new SwingWorker<>() {
             @Override
@@ -107,10 +110,45 @@ public class TruckController implements ActionListener {
         };
         worker.execute();
     }
-    public void loadOneTruck(int id){
-        Truck truck = new Truck();
+
+    public void loadTruckForEdit(int truckId, VentanaCamion formCamion) {
+        Truck truck = repositorio.findOneTruck(truckId);
+        if (truck != null) {
+            formCamion.fillForm(truck);
+        }
     }
+
+    public void makeTruckUpdate(int truckId, VentanaCamion formCamion) {
+        try {
+            String patente = formCamion.getPatente();
+            String marca = formCamion.getMarca();
+            String modelo = formCamion.getModelo();
+            String color = formCamion.getColor();
+            String fechaStr = formCamion.getLatest_maintenance();
+            int anio = Integer.parseInt(formCamion.getAnio());
+            int kms = Integer.parseInt(formCamion.getKilometraje());
+            int idCond = Integer.parseInt(formCamion.getConductor());
+
+            // Conversión de fecha segura
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.sql.Date fechaSQL = null;
+            if (fechaStr != null && !fechaStr.trim().isEmpty()) {
+                Date parsed = sdf.parse(fechaStr);
+                fechaSQL = new java.sql.Date(parsed.getTime());
+            }
+            Truck editado = new Truck(truckId, patente, marca, modelo, color, anio, fechaSQL, kms, idCond);
+
+            // Guardar
+            boolean exito = repositorio.update(editado, truckId);
+
+            if (exito) {
+                JOptionPane.showMessageDialog(vistaCamion, String.format("¡Guardado la version nueva del camion %d con patente %s en MySQL!",truckId, patente));
+                loadAndShowTrucks(); // Refresh the table
+            } else {
+                JOptionPane.showMessageDialog(vistaCamion, "Error al guardar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(formCamion, "Error: " + ex.getMessage());
+        }
     }
-
-
-
+}

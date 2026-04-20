@@ -1,6 +1,6 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs;
 
-import com.diamondogs.trucksapp.model.Truck;
+import com.diamondogs.trucksapp.controller.TruckController;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
 
 import javax.swing.*;
@@ -12,11 +12,15 @@ public class TruckEditDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JPanel panelForm;
-    private int truckId;
 
-    public TruckEditDialog(Component parent, int truckId) {
+    private final VentanaCamion formCamion;
+    private final int truckId;
+    private final TruckController controller;
+
+    public TruckEditDialog(Component parent, int truckId, TruckController controller) {
         super((Frame) SwingUtilities.getWindowAncestor(parent), "Editar Camion", true);
         this.truckId = truckId;
+        this.controller = controller;
 
         setSize(600, 500);
         setMinimumSize(new Dimension(500, 400));
@@ -31,7 +35,6 @@ public class TruckEditDialog extends JDialog {
                 onOK();
             }
         });
-
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -53,25 +56,22 @@ public class TruckEditDialog extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        VentanaCamion formCamion = new VentanaCamion("Actualizar camion","Ingrese los nuevos datos");
+        this.formCamion = new VentanaCamion("Actualizar camion","Ingrese los nuevos datos");
         panelForm.add(formCamion, BorderLayout.CENTER);
     }
 
-    public int getTruckId() {
-        return this.truckId;
+    public void loadTruckData() {
+
+        controller.loadTruckForEdit(truckId, formCamion);
     }
 
     private void onOK() {
-        // add your code here
+        controller.makeTruckUpdate(truckId, formCamion);
         dispose();
     }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
-    }
-
-    public void setTruck(Truck truck){
-
     }
 }

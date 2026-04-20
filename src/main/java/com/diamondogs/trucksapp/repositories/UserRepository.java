@@ -1,7 +1,6 @@
 package com.diamondogs.trucksapp.repositories;
 
 import com.diamondogs.trucksapp.config.DatabaseConfig;
-import com.diamondogs.trucksapp.model.Truck;
 import com.diamondogs.trucksapp.model.User;
 
 import java.sql.Connection;
@@ -60,7 +59,7 @@ public class UserRepository {
         return user;
     }
 
-    public boolean save(User user, String password) {
+    public boolean save(User user) {
         String sql = "INSERT INTO `user` (username, name, phone, password, role) "
                 + "VALUES (?, ?, ?, ?, ?)";
 
@@ -70,7 +69,7 @@ public class UserRepository {
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getName());
             pstmt.setString(3, user.getPhone());
-            pstmt.setString(4, password);
+            pstmt.setString(4, user.getPassword());
             pstmt.setString(5, user.getRole());
             int rowsInserted = pstmt.executeUpdate();
 
