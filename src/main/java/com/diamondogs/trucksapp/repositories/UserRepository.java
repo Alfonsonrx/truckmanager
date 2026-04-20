@@ -14,7 +14,7 @@ public class UserRepository {
 
     public List<User> findALl() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, username, name, role, is_active FROM user;";
+        String sql = "SELECT id, username, name, role, phone, is_active FROM user;";
 
         try (Connection conn = DatabaseConfig.getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -26,6 +26,7 @@ public class UserRepository {
                 user.setUsername(res_set.getString("username"));
                 user.setName(res_set.getString("name"));
                 user.setRole(res_set.getString("role"));
+                user.setPhone(res_set.getString("phone"));
                 user.setIs_active(res_set.getInt("is_active") == 1 ? "Si" : "No");
 
                 users.add(user);
@@ -83,8 +84,10 @@ public class UserRepository {
     }
 
     public boolean update(User user, int u_id) {
+        boolean passwordChange = user.getPassword().isEmpty();
+        String sqlPw = passwordChange ? "password=?" : "";
         String sql = "UPDATE user " +
-                "SET username=?, name=?, phone=?, `role`=? " +
+                "SET username=?, name=?, phone=?, `role`=? " + sqlPw +
                 "WHERE id=?;";
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)){
@@ -93,8 +96,9 @@ public class UserRepository {
             ps.setString(2, user.getName());
             ps.setString(3, user.getPhone());
             ps.setString(4, user.getRole());
+            ps.setString(5, user.getPassword());
 
-            ps.setInt(5, u_id);
+            ps.setInt(passwordChange ? 6 : 5, u_id);
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;

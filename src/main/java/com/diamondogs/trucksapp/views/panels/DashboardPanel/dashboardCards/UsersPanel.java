@@ -21,7 +21,7 @@ public class UsersPanel extends JPanel {
     private final UserController userController;
 
     private final JTable userTable = new JTable();
-    private final String[] columnNames = {"ID", "Username", "Nombre", "Rol", "Habilitado?", "Editar", "Estado"};
+    private final String[] columnNames = {"ID", "Username", "Nombre", "Rol", "Phone", "Habilitado?", "Editar", "Estado"};
 
     public UsersPanel() {
         // --- CONEXIÓN MVC ---
@@ -98,6 +98,7 @@ public class UsersPanel extends JPanel {
                     user.getUsername(),
                     user.getName() != null ? user.getName() : "",
                     user.getRole() != null ? user.getRole() : "User",
+                    user.getPhone(),
                     user.getIs_active() != null ? user.getIs_active() : "N/A"
             });
         }
