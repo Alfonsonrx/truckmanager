@@ -59,6 +59,27 @@ public class UserRepository {
 
         return user;
     }
+    public User findOneUserByUsernameAndPassword(String username , String password) {
+        User user = null;
+        String sql = "SELECT id, username, name, phone, role FROM user WHERE username = ? AND password = ?;";
+        try(Connection conn = DatabaseConfig.getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet res_set = pstmt.executeQuery();
+            if (res_set.next()) {
+                user = new User();
+                user.setId(res_set.getInt("id"));
+                user.setUsername(res_set.getString("username"));
+                user.setName(res_set.getString("name"));
+                user.setPhone(res_set.getString("phone"));
+                user.setRole(res_set.getString("role"));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return user;
+    }
 
     public boolean save(User user, String password) {
         String sql = "INSERT INTO `user` (username, name, phone, password, role) "
