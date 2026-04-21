@@ -7,6 +7,8 @@ import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialo
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonEditor;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonRenderer;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.DynamicStateButtonEditor;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.DynamicStateButtonRenderer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -20,7 +22,7 @@ public class TrucksPanel extends JPanel {
     private final TruckController truckController;
 
     private final JTable truckTable = new JTable();
-    private final String[] columnNames = {"ID", "Patente", "Conductor", "Kilometros","Color","Mantenimiento", "Acciones"};
+    private final String[] columnNames = {"ID", "Patente", "Conductor", "Kilometros","Color","Mantenimiento", "Habilitado?", "Editar", "Estado"};
 
     public TrucksPanel() {
         // --- CONEXIÓN MVC ---
@@ -57,7 +59,7 @@ public class TrucksPanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 6;
+                return column == 7 || column == 8;
             }
         };
         truckTable.setModel(model);
@@ -67,12 +69,18 @@ public class TrucksPanel extends JPanel {
         idColumn.setMaxWidth(30);
 
         // Agregando Boton de editar
-        truckTable.getColumn("Acciones").setCellRenderer(new ButtonRenderer("Editar"));
-        truckTable.getColumn("Acciones").setCellEditor(new ButtonEditor("Editar", this::editTruck));
+        truckTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+        truckTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editTruck));
 
-        truckTable.getColumn("Acciones").setMaxWidth(90);
-        truckTable.getColumn("Acciones").setMinWidth(70);
-        truckTable.getColumn("Acciones").setPreferredWidth(80);
+        truckTable.getColumn("Editar").setMaxWidth(90);
+        truckTable.getColumn("Editar").setMinWidth(70);
+        truckTable.getColumn("Editar").setPreferredWidth(80);
+
+        truckTable.getColumn("Estado").setCellRenderer(new DynamicStateButtonRenderer("Habilitado?"));
+        truckTable.getColumn("Estado").setCellEditor(new DynamicStateButtonEditor("Habilitado?", this::toggleTruckState));
+        truckTable.getColumn("Estado").setMaxWidth(100);
+        truckTable.getColumn("Estado").setMinWidth(80);
+        truckTable.getColumn("Estado").setPreferredWidth(100);
 
         truckTable.setRowHeight(30);
     }
@@ -89,7 +97,8 @@ public class TrucksPanel extends JPanel {
                     truck.getDriver(),
                     truck.getKilometers(),
                     truck.getColor(),
-                    truck.getLatest_maintenance()
+                    truck.getLatest_maintenance(),
+                    truck.getIs_active() != null ? truck.getIs_active() : "N/A"
             });
         }
     }
@@ -105,6 +114,24 @@ public class TrucksPanel extends JPanel {
         dialog.setVisible(true);
     }
 
+    private void toggleTruckState(int row) {
+        DefaultTableModel model = (DefaultTableModel) truckTable.getModel();
+        int userId = (int) model.getValueAt(row, 0);   // Get ID from first column
+        String currentState = (String) model.getValueAt(row, 6);   // Get ID from first column
+
+        boolean is_active = !"Si".equalsIgnoreCase(currentState);
+
+//        boolean is_active = Objects.equals(currentState, "Si");
+        String confirmText = String.format("¿Estás seguro de %s este camion?", !is_active ? "Inhabilitar" : "Habilitar");
+        int confirm = JOptionPane.showConfirmDialog(this,
+                confirmText,
+                "Confirmar",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            truckController.processDisableTruck(is_active ? 1 : 0, userId);
+        }
+    }
     public JPanel getRootPanel() {
         return rootPanel;
     }

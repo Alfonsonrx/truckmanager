@@ -22,8 +22,8 @@ public class UserEditDialog extends JDialog {
         this.userId = userId;
         this.controller = controller;
 
-        setSize(600, 500);
-        setMinimumSize(new Dimension(500, 400));
+        setSize(500, 350);
+        setMinimumSize(new Dimension(500, 300));
         setLocationRelativeTo(parent);
 
         setContentPane(contentPane);

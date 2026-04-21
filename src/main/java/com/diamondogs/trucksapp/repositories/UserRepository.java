@@ -14,7 +14,7 @@ public class UserRepository {
 
     public List<User> findALl() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, username, name, role FROM user;";
+        String sql = "SELECT id, username, name, role, phone, is_active FROM user;";
 
         try (Connection conn = DatabaseConfig.getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -26,6 +26,9 @@ public class UserRepository {
                 user.setUsername(res_set.getString("username"));
                 user.setName(res_set.getString("name"));
                 user.setRole(res_set.getString("role"));
+                user.setPhone(res_set.getString("phone"));
+                user.setIs_active(res_set.getInt("is_active") == 1 ? "Si" : "No");
+
                 users.add(user);
             }
         } catch (SQLException ex) {
@@ -58,6 +61,27 @@ public class UserRepository {
 
         return user;
     }
+    public User findOneUserByUsernameAndPassword(String username , String password) {
+        User user = null;
+        String sql = "SELECT id, username, name, phone, role FROM user WHERE username = ? AND password = ?;";
+        try(Connection conn = DatabaseConfig.getConnection()){
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet res_set = pstmt.executeQuery();
+            if (res_set.next()) {
+                user = new User();
+                user.setId(res_set.getInt("id"));
+                user.setUsername(res_set.getString("username"));
+                user.setName(res_set.getString("name"));
+                user.setPhone(res_set.getString("phone"));
+                user.setRole(res_set.getString("role"));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return user;
+    }
 
     public boolean save(User user) {
         String sql = "INSERT INTO `user` (username, name, phone, password, role) "
@@ -81,8 +105,10 @@ public class UserRepository {
     }
 
     public boolean update(User user, int u_id) {
+        boolean passwordChange = !user.getPassword().isEmpty();
+        String sqlPw = passwordChange ? "password=? " : "";
         String sql = "UPDATE user " +
-                "SET username=?, name=?, phone=?, `role`=? " +
+                "SET username=?, name=?, phone=?, `role`=? " + sqlPw +
                 "WHERE id=?;";
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)){
@@ -91,8 +117,9 @@ public class UserRepository {
             ps.setString(2, user.getName());
             ps.setString(3, user.getPhone());
             ps.setString(4, user.getRole());
+            ps.setString(5, user.getPassword());
 
-            ps.setInt(5, u_id);
+            ps.setInt(passwordChange ? 6 : 5, u_id);
 
             int rowsInserted = ps.executeUpdate();
             return rowsInserted > 0;
@@ -104,14 +131,15 @@ public class UserRepository {
         }
     }
 
-    public boolean disable_user(int u_id) {
+    public boolean disable_user(int is_active,int u_id) {
         String sql = "UPDATE user " +
-                "SET is_active=0 " +
+                "SET is_active=? " +
                 "WHERE id=?;";
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)){
 
-            ps.setInt(1, u_id);
+            ps.setInt(1, is_active);
+            ps.setInt(2, u_id);
 
             int resultado = ps.executeUpdate();
             return resultado > 0;

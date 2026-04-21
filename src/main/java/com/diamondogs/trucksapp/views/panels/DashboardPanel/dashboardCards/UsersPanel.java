@@ -6,6 +6,8 @@ import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialo
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaConductor;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonEditor;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonRenderer;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.DynamicStateButtonEditor;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.DynamicStateButtonRenderer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,14 +15,13 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.List;
 
-
 public class UsersPanel extends JPanel {
     private JPanel rootPanel;
     private final VentanaConductor formConductor;
     private final UserController userController;
 
     private final JTable userTable = new JTable();
-    private final String[] columnNames = {"ID", "Username", "Nombre", "Rol", "Acciones"};
+    private final String[] columnNames = {"ID", "Username", "Nombre", "Rol", "Phone", "Habilitado?", "Editar", "Estado"};
 
     public UsersPanel() {
         // --- CONEXIÓN MVC ---
@@ -57,7 +58,7 @@ public class UsersPanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4;
+                return column == 6 || column == 7;
             }
         };
         userTable.setModel(model);
@@ -67,12 +68,18 @@ public class UsersPanel extends JPanel {
         idColumn.setMaxWidth(30);
 
         // Agregando Boton de editar
-        userTable.getColumn("Acciones").setCellRenderer(new ButtonRenderer("Editar"));
-        userTable.getColumn("Acciones").setCellEditor(new ButtonEditor("Editar", this::editUser));
+        userTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+        userTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editUser));
 
-        userTable.getColumn("Acciones").setMaxWidth(90);
-        userTable.getColumn("Acciones").setMinWidth(70);
-        userTable.getColumn("Acciones").setPreferredWidth(80);
+        userTable.getColumn("Editar").setMaxWidth(90);
+        userTable.getColumn("Editar").setMinWidth(70);
+        userTable.getColumn("Editar").setPreferredWidth(80);
+
+        userTable.getColumn("Estado").setCellRenderer(new DynamicStateButtonRenderer("Habilitado?"));
+        userTable.getColumn("Estado").setCellEditor(new DynamicStateButtonEditor("Habilitado?", this::toggleUserState));
+        userTable.getColumn("Estado").setMaxWidth(100);
+        userTable.getColumn("Estado").setMinWidth(80);
+        userTable.getColumn("Estado").setPreferredWidth(100);
 
         userTable.setRowHeight(30);
 
@@ -90,7 +97,9 @@ public class UsersPanel extends JPanel {
                     user.getId(),
                     user.getUsername(),
                     user.getName() != null ? user.getName() : "",
-                    user.getRole() != null ? user.getRole() : "User"
+                    user.getRole() != null ? user.getRole() : "User",
+                    user.getPhone(),
+                    user.getIs_active() != null ? user.getIs_active() : "N/A"
             });
         }
     }
@@ -104,6 +113,25 @@ public class UsersPanel extends JPanel {
         UserEditDialog dialog = new UserEditDialog(this, userId, userController);
         dialog.loadUserData();
         dialog.setVisible(true);
+    }
+
+    private void toggleUserState(int row) {
+        DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+        int userId = (int) model.getValueAt(row, 0);   // Get ID from first column
+        String currentState = (String) model.getValueAt(row, 5);
+
+        boolean is_active = !"Si".equalsIgnoreCase(currentState);
+
+//        boolean is_active = Objects.equals(currentState, "Si");
+        String confirmText = String.format("¿Estás seguro de %s este usuario?", !is_active ? "Inhabilitar" : "Habilitar");
+        int confirm = JOptionPane.showConfirmDialog(this,
+                confirmText,
+                "Confirmar",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            userController.processDisableUser(is_active ? 1 : 0, userId);
+        }
     }
 
     public JPanel getRootPanel() {

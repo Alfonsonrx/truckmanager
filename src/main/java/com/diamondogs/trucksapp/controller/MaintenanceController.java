@@ -2,7 +2,6 @@ package com.diamondogs.trucksapp.controller;
 
 
 import com.diamondogs.trucksapp.model.Maintenance;
-import com.diamondogs.trucksapp.model.Truck;
 import com.diamondogs.trucksapp.repositories.MaintenanceRepository;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.MaintenancePanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormMantenimiento;
@@ -124,7 +123,23 @@ public class MaintenanceController implements ActionListener {
                 JOptionPane.showMessageDialog(formMantenimiento, "Error al guardar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(form, "Error: " + ex.getMessage());
+            JOptionPane.showMessageDialog(formMantenimiento, "Error: " + ex.getMessage());
+        }
+    }
+
+    public void processDeleteMaintenance(int maintenanceId) {
+        try {
+            // Eliminar
+            boolean exito = repository.delete(maintenanceId);
+
+            if (exito) {
+                JOptionPane.showMessageDialog(vista, String.format("¡Eliminado mantenimiento Nro. %d en MySQL!",maintenanceId));
+                loadAndShowMaintenances(); // Refresh the table
+            } else {
+                JOptionPane.showMessageDialog(vista, "Error al eliminar. Revisa la consola.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(vista, "Error: " + ex.getMessage());
         }
     }
 }
