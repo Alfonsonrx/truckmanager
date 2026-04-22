@@ -20,7 +20,6 @@ public class FormMantenimiento extends JPanel {
     private JLabel lblDesc;
     private JButton btnGuardar;
     private JPanel panelBotones;
-//    private JButton btnGuardar;
 
     public FormMantenimiento(String title_label, String title_form, boolean showSaveButton) {
 

@@ -24,7 +24,7 @@ public class Truck {
         this.color = color;
         this.year = year;
         this.latest_maintenance = latest_maintenance;
-        this.kilometers = kilometers;
+        this.kilometers = Math.abs(kilometers);
         this.driver = driver;
     }
 
@@ -83,7 +83,7 @@ public class Truck {
         this.latest_maintenance = latest_maintenance;
     }
     public void setKilometers(int kilometers) {
-        this.kilometers = kilometers;
+        this.kilometers = Math.abs(kilometers);
     }
     public void setDriver(int driver) {
         this.driver = driver;
