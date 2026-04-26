@@ -39,6 +39,8 @@ public class MaintenancePanel extends JPanel {
         initializeComponents();
 //        controller.loadAndShowMaintenances();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
+            boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
+            formMantenimiento.getRootPanel().setVisible(isAdmin);
             setupTable();
             controller.loadAndShowMaintenances();
         });

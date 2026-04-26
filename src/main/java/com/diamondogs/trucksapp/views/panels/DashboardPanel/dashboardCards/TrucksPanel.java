@@ -41,6 +41,8 @@ public class TrucksPanel extends JPanel {
         initializeComponents();
 //        truckController.loadAndShowTrucks();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
+            boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
+            formCamion.setVisible(isAdmin);
             setupTable();
             truckController.loadAndShowTrucks();
         });

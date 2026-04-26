@@ -2,15 +2,7 @@ package com.diamondogs.trucksapp.views.panels.DashboardPanel.sidebar;
 
 import com.diamondogs.trucksapp.theme.ThemeManager;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -149,7 +141,17 @@ public class Sidebar extends JPanel {
         logout.setAlignmentX(Component.LEFT_ALIGNMENT);
         logout.setMaximumSize(new Dimension(Integer.MAX_VALUE, BUTTON_HEIGHT));
         logout.setFocusPainted(false);
-        logout.addActionListener(e -> onLogout.run());
+        logout.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this.getParent(),
+                    "¿Estás seguro de cerrar sesion?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                onLogout.run();
+            }
+        });
+
+
         return logout;
     }
 }

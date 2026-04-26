@@ -37,6 +37,8 @@ public class UsersPanel extends JPanel {
         userController = new UserController(formConductor, this);
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
+            boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
+            formConductor.setVisible(isAdmin);
             setupTable();
             userController.loadAndShowUsers();
         });

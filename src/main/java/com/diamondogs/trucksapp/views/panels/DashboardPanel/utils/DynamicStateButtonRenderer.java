@@ -1,5 +1,7 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.utils;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -8,7 +10,14 @@ public class DynamicStateButtonRenderer extends JButton implements TableCellRend
     private final String statusColumnName;
     public DynamicStateButtonRenderer(String statusColumnName) {
         this.statusColumnName = statusColumnName;
+
+        putClientProperty(FlatClientProperties.STYLE, "arc: 0; "+
+                "focusWidth: 0; " +
+                "borderWidth: 1");   // rounded corners
+
         setFocusPainted(false);
+
+        setMargin(new Insets(2, 8, 2, 8));   // Reduce internal padding
     }
 
     @Override
