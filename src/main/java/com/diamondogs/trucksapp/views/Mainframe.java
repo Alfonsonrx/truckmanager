@@ -1,6 +1,8 @@
 package com.diamondogs.trucksapp.views;
 
 import com.diamondogs.trucksapp.config.DatabaseConfig;
+import com.diamondogs.trucksapp.model.User;
+import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.DashboardPanel;
 import com.diamondogs.trucksapp.views.panels.LoginPanel;
 
@@ -12,6 +14,7 @@ import java.sql.SQLException;
 public class Mainframe extends JFrame implements AppNavigator {
 
     private final JLabel connectionStatusLabel;
+    private final JLabel userInfoLabel;
     private final JPanel contentPanel;
     private final CardLayout cardLayout = new CardLayout();
 
@@ -33,6 +36,9 @@ public class Mainframe extends JFrame implements AppNavigator {
         connectionStatusLabel = new JLabel("Checking database connection...");
         statusBar.add(connectionStatusLabel, BorderLayout.WEST);
 
+        userInfoLabel = new JLabel("No user logged.");
+        statusBar.add(userInfoLabel, BorderLayout.EAST);
+
         loginPanel = new LoginPanel(this);
         dashboardPanel = new DashboardPanel(this);
 
@@ -45,6 +51,15 @@ public class Mainframe extends JFrame implements AppNavigator {
         showPanel("login");
 
         checkDatabaseConnection();
+        SessionManager.getInstance().addListener(this::updateUserLabel);
+    }
+
+    private void updateUserLabel(User user) {
+        if (user != null) {
+            userInfoLabel.setText(String.format("%s // %s ", user.getUsername(),  user.getRole().toUpperCase()));
+        } else {
+            userInfoLabel.setText("No user logged");
+        }
     }
 
     private void checkDatabaseConnection() {

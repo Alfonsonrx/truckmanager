@@ -1,5 +1,6 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel;
 
+import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.AppNavigator;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.MaintenancePanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.TrucksPanel;
@@ -40,7 +41,10 @@ public class DashboardPanel extends JPanel {
         cards.put(NavItem.MAINTENANCES, maintenancePanel.getRootPanel());
         cards.forEach((item, panel) -> contentPanel.add(panel, item.getCardKey()));
 
-        sidebar = new Sidebar(this::showCard, () -> navigator.showPanel(LOGIN_CARD));
+        sidebar = new Sidebar(this::showCard, () -> {
+            SessionManager.getInstance().clear();
+            navigator.showPanel(LOGIN_CARD);
+        });
 
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
@@ -53,12 +57,6 @@ public class DashboardPanel extends JPanel {
         sidebar.setActive(item);
     }
 
-    /**
-     * Compatibility shim: {@code Mainframe} registers the dashboard under the
-     * {@code "dashboard"} card via {@code dashboardPanel.getRootPanel()}. The
-     * double-root structure has been collapsed, so this simply returns
-     * {@code this}.
-     */
     public JPanel getRootPanel() {
         return this;
     }

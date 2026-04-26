@@ -2,6 +2,7 @@ package com.diamondogs.trucksapp.views.panels;
 
 import com.diamondogs.trucksapp.controller.LoginController;
 import com.diamondogs.trucksapp.model.User;
+import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.AppNavigator;
 import com.diamondogs.trucksapp.views.Mainframe;
 
@@ -33,6 +34,7 @@ public class LoginPanel {
         else {
             User findUser = loginController.login(username, password);
             if (findUser != null) {
+                SessionManager.getInstance().setCurrentUser(findUser);
                 JOptionPane.showMessageDialog(rootPanel, "Login exitoso " + findUser.getUsername());
                 navigator.showPanel("dashboard");
             }
