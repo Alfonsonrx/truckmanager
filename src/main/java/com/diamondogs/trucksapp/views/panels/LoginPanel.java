@@ -39,7 +39,7 @@ public class LoginPanel {
                 navigator.showPanel("dashboard");
             }
             else {
-                JOptionPane.showMessageDialog(rootPanel, "Usuario o Contraseña incorrecto");
+                JOptionPane.showMessageDialog(rootPanel, "Credenciales incorrectas o el usuario esta inhabilitado.");
             }
         }
 

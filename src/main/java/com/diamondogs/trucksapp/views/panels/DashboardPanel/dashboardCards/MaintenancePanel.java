@@ -40,7 +40,8 @@ public class MaintenancePanel extends JPanel {
 //        controller.loadAndShowMaintenances();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
-            formMantenimiento.getRootPanel().setVisible(isAdmin);
+            boolean isMech = "mecanico".equalsIgnoreCase(SessionManager.getInstance().getRole());
+            formMantenimiento.getRootPanel().setVisible(isAdmin || isMech);
             setupTable();
             controller.loadAndShowMaintenances();
         });
@@ -69,8 +70,9 @@ public class MaintenancePanel extends JPanel {
 
     private void setupTable() {
         boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
+        boolean isMech = "mecanico".equalsIgnoreCase(SessionManager.getInstance().getRole());
 
-        String[] columns = isAdmin ? columnNames : new String[]{"ID", "Camion", "Fecha", "Tipo","Descripcion"};
+        String[] columns = (isAdmin || isMech) ? columnNames : new String[]{"ID", "Camion", "Fecha", "Tipo","Descripcion"};
 
         DefaultTableModel model = new DefaultTableModel(columns, 0){
             @Override
@@ -84,7 +86,7 @@ public class MaintenancePanel extends JPanel {
         maintenanceTable.getColumn("Camion").setMaxWidth(80);
         maintenanceTable.getColumn("Fecha").setMaxWidth(80);
         maintenanceTable.getColumn("Tipo").setMaxWidth(100);
-        if (isAdmin) {
+        if (isAdmin || isMech) {
             maintenanceTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
             maintenanceTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editMaintenance));
             maintenanceTable.getColumn("Editar").setMaxWidth(90);

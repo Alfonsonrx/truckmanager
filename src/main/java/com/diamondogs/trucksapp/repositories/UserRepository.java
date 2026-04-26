@@ -63,7 +63,7 @@ public class UserRepository {
     }
     public User findOneUserByUsernameAndPassword(String username , String password) {
         User user = null;
-        String sql = "SELECT id, username, name, phone, role FROM user WHERE username = ? AND password = ?;";
+        String sql = "SELECT id, username, name, phone, role FROM user WHERE username = ? AND password = ? AND is_active = 1;";
         try(Connection conn = DatabaseConfig.getConnection()){
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
