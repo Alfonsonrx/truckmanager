@@ -2,6 +2,7 @@ package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
 import com.diamondogs.trucksapp.controller.UserController;
 import com.diamondogs.trucksapp.model.User;
+import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs.UserEditDialog;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaConductor;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonEditor;
@@ -14,11 +15,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class UsersPanel extends JPanel {
     private JPanel rootPanel;
     private final VentanaConductor formConductor;
     private final UserController userController;
+
+    private final Consumer<User> sessionListener;
 
     private final JTable userTable = new JTable();
     private final String[] columnNames = {"ID", "Username", "Nombre", "Rol", "Phone", "Habilitado?", "Editar", "Estado"};
@@ -32,7 +36,11 @@ public class UsersPanel extends JPanel {
         // (Esto hará que el botón de formConductor empiece a funcionar)
         userController = new UserController(formConductor, this);
         initializeComponents();
-        userController.loadAndShowUsers();
+        sessionListener = user -> SwingUtilities.invokeLater(()->{
+            setupTable();
+            userController.loadAndShowUsers();
+        });
+        SessionManager.getInstance().addListener(sessionListener);
     }
 
     private void initializeComponents() {
@@ -55,7 +63,13 @@ public class UsersPanel extends JPanel {
     }
 
     private void setupTable() {
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+        boolean isAdmin = currentUser != null && "administrador".equalsIgnoreCase(currentUser.getRole());
+//        int currentUserId = currentUser != null ? currentUser.getId() : -1;
+
+        String[] columns = isAdmin ? columnNames : new String[]{"ID", "Username", "Nombre", "Rol", "Phone", "Habilitado?"};
+
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 6 || column == 7;
@@ -68,18 +82,20 @@ public class UsersPanel extends JPanel {
         idColumn.setMaxWidth(30);
 
         // Agregando Boton de editar
-        userTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
-        userTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editUser));
+        if (isAdmin) {
+            userTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+            userTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editUser));
 
-        userTable.getColumn("Editar").setMaxWidth(90);
-        userTable.getColumn("Editar").setMinWidth(70);
-        userTable.getColumn("Editar").setPreferredWidth(80);
+            userTable.getColumn("Editar").setMaxWidth(90);
+            userTable.getColumn("Editar").setMinWidth(70);
+            userTable.getColumn("Editar").setPreferredWidth(80);
 
-        userTable.getColumn("Estado").setCellRenderer(new DynamicStateButtonRenderer("Habilitado?"));
-        userTable.getColumn("Estado").setCellEditor(new DynamicStateButtonEditor("Habilitado?", this::toggleUserState));
-        userTable.getColumn("Estado").setMaxWidth(100);
-        userTable.getColumn("Estado").setMinWidth(80);
-        userTable.getColumn("Estado").setPreferredWidth(100);
+            userTable.getColumn("Estado").setCellRenderer(new DynamicStateButtonRenderer("Habilitado?"));
+            userTable.getColumn("Estado").setCellEditor(new DynamicStateButtonEditor("Habilitado?", this::toggleUserState));
+            userTable.getColumn("Estado").setMaxWidth(100);
+            userTable.getColumn("Estado").setMinWidth(80);
+            userTable.getColumn("Estado").setPreferredWidth(100);
+        }
 
         userTable.setRowHeight(30);
 

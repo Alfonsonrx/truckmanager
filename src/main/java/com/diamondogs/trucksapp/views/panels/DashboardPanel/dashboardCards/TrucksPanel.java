@@ -3,6 +3,8 @@ package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
 import com.diamondogs.trucksapp.controller.TruckController;
 import com.diamondogs.trucksapp.model.Truck;
+import com.diamondogs.trucksapp.model.User;
+import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.dialogs.TruckEditDialog;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonEditor;
@@ -15,11 +17,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class TrucksPanel extends JPanel {
     private JPanel rootPanel;
     private final VentanaCamion formCamion;
     private final TruckController truckController;
+
+    private final Consumer<User> sessionListener;
 
     private final JTable truckTable = new JTable();
     private final String[] columnNames = {"ID", "Patente", "Conductor", "Kilometros","Color","Mantenimiento", "Habilitado?", "Editar", "Estado"};
@@ -33,7 +39,12 @@ public class TrucksPanel extends JPanel {
         // (Esto hará que el botón de formCamion empiece a funcionar)
         truckController = new TruckController(formCamion, this);
         initializeComponents();
-        truckController.loadAndShowTrucks();
+//        truckController.loadAndShowTrucks();
+        sessionListener = user -> SwingUtilities.invokeLater(()->{
+            setupTable();
+            truckController.loadAndShowTrucks();
+        });
+        SessionManager.getInstance().addListener(sessionListener);
     }
 
     private void initializeComponents() {
@@ -56,10 +67,24 @@ public class TrucksPanel extends JPanel {
     }
 
     private void setupTable() {
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+        boolean isAdmin = currentUser != null && "administrador".equalsIgnoreCase(currentUser.getRole());
+        int currentUserId = currentUser != null ? currentUser.getId() : -1;
+
+        String[] columns = isAdmin ? columnNames : new String[]{"ID", "Patente", "Conductor", "Kilometros","Color","Mantenimiento", "Habilitado?", "Editar"};
+
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 7 || column == 8;
+                if (column == 7) {
+                    if (isAdmin) return true;
+
+                    Object rowId = getValueAt(row, 2);
+                    return rowId != null && Integer.parseInt(rowId.toString()) == currentUserId;
+                }
+
+                if (isAdmin && column == 8) return true;
+                return false;
             }
         };
         truckTable.setModel(model);
@@ -69,18 +94,29 @@ public class TrucksPanel extends JPanel {
         idColumn.setMaxWidth(30);
 
         // Agregando Boton de editar
-        truckTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar"));
+        truckTable.getColumn("Editar").setCellRenderer(new ButtonRenderer("Editar", (table, row)->{
+            User current = SessionManager.getInstance().getCurrentUser();
+            if (current == null) return false;
+            if ("administrador".equalsIgnoreCase(current.getRole())) return true;
+
+            Object rowId = table.getValueAt(row, 2);
+            if (rowId == null) return false;
+
+            return Integer.parseInt(rowId.toString()) == current.getId();
+        }));
         truckTable.getColumn("Editar").setCellEditor(new ButtonEditor("Editar", this::editTruck));
 
-        truckTable.getColumn("Editar").setMaxWidth(90);
-        truckTable.getColumn("Editar").setMinWidth(70);
-        truckTable.getColumn("Editar").setPreferredWidth(80);
+        truckTable.getColumn("Editar").setMaxWidth(110);
+        truckTable.getColumn("Editar").setMinWidth(80);
+        truckTable.getColumn("Editar").setPreferredWidth(100);
 
-        truckTable.getColumn("Estado").setCellRenderer(new DynamicStateButtonRenderer("Habilitado?"));
-        truckTable.getColumn("Estado").setCellEditor(new DynamicStateButtonEditor("Habilitado?", this::toggleTruckState));
-        truckTable.getColumn("Estado").setMaxWidth(100);
-        truckTable.getColumn("Estado").setMinWidth(80);
-        truckTable.getColumn("Estado").setPreferredWidth(100);
+        if (isAdmin) {
+            truckTable.getColumn("Estado").setCellRenderer(new DynamicStateButtonRenderer("Habilitado?"));
+            truckTable.getColumn("Estado").setCellEditor(new DynamicStateButtonEditor("Habilitado?", this::toggleTruckState));
+            truckTable.getColumn("Estado").setMaxWidth(100);
+            truckTable.getColumn("Estado").setMinWidth(80);
+            truckTable.getColumn("Estado").setPreferredWidth(100);
+        }
 
         truckTable.setRowHeight(30);
     }

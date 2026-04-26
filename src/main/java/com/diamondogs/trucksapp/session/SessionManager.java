@@ -18,7 +18,12 @@ public final class SessionManager {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
+
         notifyListeners();
+    }
+
+    public User getCurrentUser() {
+        return this.currentUser;
     }
 
     public void clear() {
