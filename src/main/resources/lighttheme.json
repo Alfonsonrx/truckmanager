@@ -1,0 +1,32 @@
+{
+  "name": "Trucks Manager Light",
+  "dark": false,
+  "author": "Nerox",
+  "editorScheme": "",
+  "ui": {
+    "*": {
+      "background": "#f5f5f5",
+      "foreground": "#2b2b2b"
+    },
+    "Button.arc": 8,
+    "Component.arc": 8,
+    "ProgressBar.arc": 8,
+    "TextComponent.arc": 6,
+    "ScrollBar.thumbArc": 8,
+    "ScrollBar.thumbInsets": "2,2,2,2",
+    "ToggleButton.arc": 8,
+    "ToggleButton.selectedBackground": "#4a90d9",
+    "ToggleButton.selectedForeground": "#ffffff",
+    "ToggleButton.hoverBackground": "#e3e3e3",
+    "Separator.foreground": "#c8c8c8",
+    "Panel.background": "#f5f5f5",
+    "TitlePane.background": "#f5f5f5",
+    "TitlePane.foreground": "#2b2b2b",
+    "TableHeader.background": "#e8e8e8",
+    "TableHeader.foreground": "#2b2b2b",
+    "Table.gridColor": "#d4d4d4",
+    "Table.selectionBackground": "#4a90d9",
+    "Table.selectionForeground": "#ffffff",
+    "Table.alternateRowColor": "#fafafa"
+  }
+}
