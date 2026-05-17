@@ -39,7 +39,6 @@ public class TrucksPanel extends JPanel {
         // (Esto hará que el botón de formCamion empiece a funcionar)
         truckController = new TruckController(formCamion, this);
         initializeComponents();
-//        truckController.loadAndShowTrucks();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
             formCamion.setVisible(isAdmin);
@@ -122,6 +121,7 @@ public class TrucksPanel extends JPanel {
 
         truckTable.setRowHeight(30);
     }
+
     public void updateTable(List<Truck> trucks) {
         if (trucks == null) return;
 

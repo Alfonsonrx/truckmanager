@@ -11,7 +11,8 @@ import java.awt.event.KeyEvent;
 public enum NavItem {
     USERS("users", "Usuarios", KeyEvent.VK_U),
     TRUCKS("trucks", "Camiones", KeyEvent.VK_C),
-    MAINTENANCES("maintenances", "Mantenimientos", KeyEvent.VK_M);
+    MAINTENANCES("maintenances", "Mantenimientos", KeyEvent.VK_M),
+    COMPUTERS("computers", "Equipos", KeyEvent.VK_E);
 
     private final String cardKey;
     private final String label;

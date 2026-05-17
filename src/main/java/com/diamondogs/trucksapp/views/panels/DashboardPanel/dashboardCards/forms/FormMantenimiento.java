@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 public class FormMantenimiento extends JPanel {
     private JPanel rootPanel;
     private JLabel lblTitle;
+
     private JPanel formPanel;
     private JTextField inputTruck;
     private JTextField inputDate;
@@ -19,7 +20,7 @@ public class FormMantenimiento extends JPanel {
     private JLabel lblType;
     private JLabel lblDesc;
     private JButton btnGuardar;
-    private JPanel panelBotones;
+//    private JPanel panelBotones;
 
     public FormMantenimiento(String title_label, String title_form, boolean showSaveButton) {
 
@@ -41,7 +42,6 @@ public class FormMantenimiento extends JPanel {
             btnGuardar.addActionListener(listener);
         }
     }
-
     public JButton getBtnGuardar() {
         return btnGuardar;
     }

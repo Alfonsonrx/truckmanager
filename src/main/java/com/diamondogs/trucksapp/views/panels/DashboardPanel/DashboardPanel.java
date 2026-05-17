@@ -2,6 +2,7 @@ package com.diamondogs.trucksapp.views.panels.DashboardPanel;
 
 import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.AppNavigator;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.ComputersPanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.MaintenancePanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.TrucksPanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.UsersPanel;
@@ -25,6 +26,7 @@ public class DashboardPanel extends JPanel {
     private final UsersPanel usersPanel;
     private final TrucksPanel trucksPanel;
     private final MaintenancePanel maintenancePanel;
+    private final ComputersPanel computersPanel;
 
     public DashboardPanel(AppNavigator navigator) {
         setLayout(new BorderLayout());
@@ -34,11 +36,15 @@ public class DashboardPanel extends JPanel {
         usersPanel = new UsersPanel();
         trucksPanel = new TrucksPanel();
         maintenancePanel = new MaintenancePanel();
+        computersPanel = new ComputersPanel();
 
         Map<NavItem, JPanel> cards = new EnumMap<>(NavItem.class);
         cards.put(NavItem.USERS, usersPanel.getRootPanel());
         cards.put(NavItem.TRUCKS, trucksPanel.getRootPanel());
         cards.put(NavItem.MAINTENANCES, maintenancePanel.getRootPanel());
+        cards.put(NavItem.COMPUTERS, computersPanel.getRootPanel());
+
+
         cards.forEach((item, panel) -> contentPanel.add(panel, item.getCardKey()));
 
         sidebar = new Sidebar(this::showCard, () -> {
