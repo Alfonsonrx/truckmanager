@@ -1,10 +1,14 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
+import com.diamondogs.trucksapp.controller.ComputerController;
 import com.diamondogs.trucksapp.controller.TruckController;
+import com.diamondogs.trucksapp.model.Computer;
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputer;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
+import com.diamondogs.trucksapp.model.Computer;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,7 +19,7 @@ public class ComputersPanel extends JPanel {
     private JPanel rootPanel;
 
     private final FormComputer formComputer;
-//    private final ComputersController computersController;
+    private final ComputerController computersController;
 
     private final Consumer<User> sessionListener;
 
@@ -23,15 +27,19 @@ public class ComputersPanel extends JPanel {
     private final String[] columnNames = {"Numero Serie", "Fecha Adquisicion", "Tipo", "Software"};
 
     public ComputersPanel() {
-        formComputer = new FormComputer("Registro de computadores","Ingrese los datos del computador", true);
 
-//        truckController = new TruckController(formCamion, this);
+        formComputer = new FormComputer("Registro de computadores","Ingrese los datos del computador", true);
+        computersController = new ComputerController(this);
+
+//       truckController = new TruckController(formCamion, this);
+
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
             formComputer.setVisible(isAdmin);
             setupTable();
 //            truckController.loadAndShowTrucks();
+            computersController.loadAndShowComputers();
         });
         SessionManager.getInstance().addListener(sessionListener);
     }
@@ -58,8 +66,37 @@ public class ComputersPanel extends JPanel {
 
         String[] columns = (isAdmin || isTechnician) ? columnNames : new String[]{"Numero Serie", "Fecha Adquisicion", "Tipo", "Software"};
 
-        DefaultTableModel model = new DefaultTableModel(columns, 0){
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
+
+        //Aplique el modelo a la JTable física para que pinte las columnas en la pantalla (Pua IA esto)
+        computersTable.setModel(model);
+        computersTable.setRowHeight(30);
+    }
+
+    /**
+     * Recibe los datos procesados en segundo plano por el
+     * controlador e introduce dinámicamente las filas en la tabla visual.
+     */
+    public void updateTable(List<Computer> computers) {
+        if (computers == null) return;
+
+        DefaultTableModel model = (DefaultTableModel) computersTable.getModel();
+        model.setRowCount(0); // Limpia filas viejas para evitar duplicaciones visuales
+
+        for (Computer comp : computers) {
+            // Insertamos los valores de tu modelo en orden correspondiente a las columnas
+            model.addRow(new Object[]{
+                    comp.getSerial_num() != null ? comp.getSerial_num() : "N/A",
+                    comp.getAdquisicion() != null ? comp.getAdquisicion().toString() : "Sin fecha",
+                    comp.getTipo() != null ? comp.getTipo() : "N/A",
+                    comp.getSoftware() != null ? comp.getSoftware() : "N/A"
+            });
+        }
     }
     public JPanel getRootPanel() {
         return rootPanel;
