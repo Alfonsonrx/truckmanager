@@ -13,7 +13,7 @@ public class ComputerRepository {
     //Trae todos los computadores y los almacena en una lista.
     public static List<Computer> AllComputers() {
         List<Computer> computers = new ArrayList<>();
-        String query = "SELECT * FROM computers";
+        String query = "SELECT * FROM computer";
         try(Connection con = DatabaseConfig.getConnection())
         {
             PreparedStatement pstmt = con.prepareStatement(query);
