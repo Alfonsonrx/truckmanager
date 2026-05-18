@@ -12,7 +12,7 @@ public class DatabaseConfig {
     static {
         HikariConfig config = new HikariConfig();
 
-        config.setJdbcUrl("jdbc:mysql://localhost:3306/db_camiones"
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/db_camiones_3"
                 + "?useSSL=false"
                 +"&serverTimezone=UTC"
                 +"&allowPublicKeyRetrieval=true");
