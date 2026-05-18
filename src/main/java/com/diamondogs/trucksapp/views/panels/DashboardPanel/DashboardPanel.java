@@ -2,10 +2,7 @@ package com.diamondogs.trucksapp.views.panels.DashboardPanel;
 
 import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.AppNavigator;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.ComputersPanel;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.MaintenancePanel;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.TrucksPanel;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.UsersPanel;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.*;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.sidebar.NavItem;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.sidebar.Sidebar;
 
@@ -24,8 +21,9 @@ public class DashboardPanel extends JPanel {
     private final CardLayout cardLayout = new CardLayout();
 
     private final UsersPanel usersPanel;
-    private final TrucksPanel trucksPanel;
-    private final MaintenancePanel maintenancePanel;
+    private final TrucksMultiPanel trucksMultiPanel;
+//    private final TrucksPanel trucksPanel;
+//    private final MaintenancePanel maintenancePanel;
     private final ComputersPanel computersPanel;
 
     public DashboardPanel(AppNavigator navigator) {
@@ -34,14 +32,15 @@ public class DashboardPanel extends JPanel {
         contentPanel = new JPanel(cardLayout);
 
         usersPanel = new UsersPanel();
-        trucksPanel = new TrucksPanel();
-        maintenancePanel = new MaintenancePanel();
+        trucksMultiPanel = new TrucksMultiPanel();
+//        trucksPanel = new TrucksPanel();
+//        maintenancePanel = new MaintenancePanel();
         computersPanel = new ComputersPanel();
 
         Map<NavItem, JPanel> cards = new EnumMap<>(NavItem.class);
         cards.put(NavItem.USERS, usersPanel.getRootPanel());
-        cards.put(NavItem.TRUCKS, trucksPanel.getRootPanel());
-        cards.put(NavItem.MAINTENANCES, maintenancePanel.getRootPanel());
+        cards.put(NavItem.TRUCKS, trucksMultiPanel.getRootPanel());
+//        cards.put(NavItem.MAINTENANCES, maintenancePanel.getRootPanel());
         cards.put(NavItem.COMPUTERS, computersPanel.getRootPanel());
 
 
