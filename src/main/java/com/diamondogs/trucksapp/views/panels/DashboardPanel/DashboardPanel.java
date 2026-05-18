@@ -22,9 +22,7 @@ public class DashboardPanel extends JPanel {
 
     private final UsersPanel usersPanel;
     private final TrucksMultiPanel trucksMultiPanel;
-//    private final TrucksPanel trucksPanel;
-//    private final MaintenancePanel maintenancePanel;
-    private final ComputersPanel computersPanel;
+    private final ComputersMultiPanel computersMultiPanel;
 
     public DashboardPanel(AppNavigator navigator) {
         setLayout(new BorderLayout());
@@ -33,15 +31,12 @@ public class DashboardPanel extends JPanel {
 
         usersPanel = new UsersPanel();
         trucksMultiPanel = new TrucksMultiPanel();
-//        trucksPanel = new TrucksPanel();
-//        maintenancePanel = new MaintenancePanel();
-        computersPanel = new ComputersPanel();
+        computersMultiPanel = new ComputersMultiPanel();
 
         Map<NavItem, JPanel> cards = new EnumMap<>(NavItem.class);
         cards.put(NavItem.USERS, usersPanel.getRootPanel());
         cards.put(NavItem.TRUCKS, trucksMultiPanel.getRootPanel());
-//        cards.put(NavItem.MAINTENANCES, maintenancePanel.getRootPanel());
-        cards.put(NavItem.COMPUTERS, computersPanel.getRootPanel());
+        cards.put(NavItem.COMPUTERS, computersMultiPanel.getRootPanel());
 
 
         cards.forEach((item, panel) -> contentPanel.add(panel, item.getCardKey()));

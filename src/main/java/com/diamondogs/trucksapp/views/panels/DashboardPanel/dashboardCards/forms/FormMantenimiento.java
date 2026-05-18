@@ -29,6 +29,12 @@ public class FormMantenimiento extends JPanel {
 
         formPanel.setLayout(new GridLayout(4, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createTitledBorder(title_form));
+
+        inputDesc.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0x4a4a4a),1),
+                BorderFactory.createEmptyBorder(6,8,6,8)
+        ));
+
         btnGuardar.setVisible(showSaveButton);
 
         setVisible(true);
