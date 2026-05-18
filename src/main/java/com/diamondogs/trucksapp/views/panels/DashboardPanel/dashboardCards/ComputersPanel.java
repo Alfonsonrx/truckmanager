@@ -20,7 +20,7 @@ public class ComputersPanel extends JPanel {
     private final Consumer<User> sessionListener;
 
     private final JTable computersTable = new JTable();
-    private final String[] columnNames = {"Numero Serie", "Fecha Adquisicion", "Usuario Asignado", "Detalles", "Estado"};
+    private final String[] columnNames = {"Numero Serie", "Fecha Adquisicion", "Tipo", "Software"};
 
     public ComputersPanel() {
         formComputer = new FormComputer("Registro de computadores","Ingrese los datos del computador", true);
@@ -56,7 +56,7 @@ public class ComputersPanel extends JPanel {
         boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
         boolean isTechnician = "tecnico".equalsIgnoreCase(SessionManager.getInstance().getRole());
 
-        String[] columns = (isAdmin || isTechnician) ? columnNames : new String[]{"Numero Serie", "Fecha Adquisicion", "Usuario Asignado", "Detalles"};
+        String[] columns = (isAdmin || isTechnician) ? columnNames : new String[]{"Numero Serie", "Fecha Adquisicion", "Tipo", "Software"};
 
         DefaultTableModel model = new DefaultTableModel(columns, 0){
         };
