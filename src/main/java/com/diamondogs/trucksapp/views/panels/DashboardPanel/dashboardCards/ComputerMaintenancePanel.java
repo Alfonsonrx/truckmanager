@@ -2,6 +2,7 @@ package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
 import com.diamondogs.trucksapp.controller.ComputerController;
 import com.diamondogs.trucksapp.model.Computer;
+import com.diamondogs.trucksapp.model.ComputerMaintenance;
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.session.SessionManager;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputer;
@@ -67,6 +68,28 @@ public class ComputerMaintenancePanel extends JPanel {
         //Aplique el modelo a la JTable física para que pinte las columnas en la pantalla (Pua IA esto)
         computersMaintenanceTable.setModel(model);
         computersMaintenanceTable.setRowHeight(30);
+    }
+    /**
+     * Recibe los datos procesados en segundo plano por el
+     * controlador e introduce dinámicamente las filas en la tabla visual.
+     */
+    public void updateTable(List<ComputerMaintenance> computers) {
+        if (computers == null) return;
+
+        DefaultTableModel model = (DefaultTableModel) computersMaintenanceTable.getModel();
+        model.setRowCount(0); // Limpia filas viejas para evitar duplicaciones visuales
+
+        for (ComputerMaintenance comp : computers) {
+            // Insertamos los valores de tu modelo en orden correspondiente a las columnas
+            model.addRow(new Object[]{
+                    comp.getId(),
+                    comp.getSn_computer(),
+                    comp.getDate() != null ? comp.getDate() : "Sin Fecha",
+                    comp.getType() != null ? comp.getType() : "N/A",
+                    comp.getReasons() != null ? comp.getReasons() : "N/A"
+            });
+        }
+
     }
 
     public JPanel getRootPanel() {
