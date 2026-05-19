@@ -1,6 +1,7 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
 import com.diamondogs.trucksapp.controller.ComputerController;
+import com.diamondogs.trucksapp.controller.ComputerMaintenanceController;
 import com.diamondogs.trucksapp.model.Computer;
 import com.diamondogs.trucksapp.model.ComputerMaintenance;
 import com.diamondogs.trucksapp.model.User;
@@ -25,13 +26,14 @@ public class ComputerMaintenancePanel extends JPanel {
 
     public ComputerMaintenancePanel() {
         formComputerMaintenance = new FormComputerMaintenance("Registro de computadores","Ingrese los datos del computador", true);
-
+        ComputerMaintenanceController computerMaintenanceController = new ComputerMaintenanceController(this);
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
             formComputerMaintenance.setVisible(isAdmin);
             setupTable();
-//            computersController.loadAndShowComputers();
+            computerMaintenanceController.loadAndShowComputersMaintenance();
+
         });
         SessionManager.getInstance().addListener(sessionListener);
     }
