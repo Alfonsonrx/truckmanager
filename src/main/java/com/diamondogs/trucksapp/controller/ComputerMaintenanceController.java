@@ -23,14 +23,14 @@ public class ComputerMaintenanceController {
         this.serialNum = null;
     }
 
-    public void loadAndShowMaintenances() {
+    public void loadAndShowComputersMaintenance() {
         SwingWorker<List<ComputerMaintenance>, Void> worker = new SwingWorker<>() {
             @Override
             protected List<ComputerMaintenance> doInBackground() {
                 if (serialNum != null) {
                     return ComputerMaintenanceRepository.findBySerialNum(serialNum);
                 } else {
-                    return ComputerMaintenanceRepository.generalMaintenances();
+                    return ComputerMaintenanceRepository.AllComputersMaintenance();
                 }
             }
 

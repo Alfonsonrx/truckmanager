@@ -41,7 +41,7 @@ public class ComputerDetailFrame extends JFrame {
         initUI();
 
         computerController.loadAndShowComputerDetail(computerSN);
-        maintenanceController.loadAndShowMaintenances();
+        maintenanceController.loadAndShowComputersMaintenance();
         softwareController.loadAndShowSoftware();
         assignmentController.loadAndShowAssignments();
     }
