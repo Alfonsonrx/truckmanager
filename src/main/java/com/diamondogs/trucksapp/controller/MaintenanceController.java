@@ -3,7 +3,7 @@ package com.diamondogs.trucksapp.controller;
 
 import com.diamondogs.trucksapp.model.Maintenance;
 import com.diamondogs.trucksapp.repositories.MaintenanceRepository;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.MaintenancePanel;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels.MaintenancePanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormMantenimiento;
 
 import javax.swing.*;

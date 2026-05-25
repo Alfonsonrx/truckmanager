@@ -25,7 +25,6 @@ public class ComputerRepository {
                 comp.setSerial_num(res_set.getString("serial_num"));
                 comp.setAdquisicion(res_set.getDate("adquisition_date"));
                 comp.setTipo(res_set.getString("type"));
-                comp.setSoftware(res_set.getString("software_installed"));
 
                 computers.add(comp);
 

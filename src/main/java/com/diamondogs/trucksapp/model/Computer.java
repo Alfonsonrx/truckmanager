@@ -6,24 +6,34 @@ public class Computer {
     private String serial_num;
     private Date adquisicion;
     private String tipo;
-    private String software;
+    private String ram;
+    private String motherboard;
+    private String cpu;
+    private String storage;
+    private java.sql.Date lastMaintenanceDate;
+    private int currentUserId;
+    private String currentUserName;
 
     public Computer() {
     }
 
-    public Computer(String software, String tipo, Date adquisicion, String serial_num) {
-        this.software = software;
+    public Computer( String tipo, Date adquisicion, String serial_num) {
         this.tipo = tipo;
         this.adquisicion = adquisicion;
         this.serial_num = serial_num;
     }
 
-    public String getSoftware() {
-        return software;
-    }
-
-    public void setSoftware(String software) {
-        this.software = software;
+    public Computer(String serialNum, java.sql.Date adquisicionDate, String type, String ram, String motherboard, String cpu, String storage, java.sql.Date lastMaintenanceDate, int currentUserId, String currentUserName) {
+        this.serial_num = serialNum;
+        this.adquisicion = adquisicionDate;
+        this.tipo = type;
+        this.ram = ram;
+        this.motherboard = motherboard;
+        this.cpu = cpu;
+        this.storage = storage;
+        this.lastMaintenanceDate = lastMaintenanceDate;
+        this.currentUserId = currentUserId;
+        this.currentUserName = currentUserName;
     }
 
     public String getTipo() {
@@ -49,4 +59,61 @@ public class Computer {
     public void setSerial_num(String serial_num) {
         this.serial_num = serial_num;
     }
+
+    public String getRam() {
+        return ram;
+    }
+
+    public void setRam(String ram) {
+        this.ram = ram;
+    }
+
+    public String getMotherboard() {
+        return motherboard;
+    }
+
+    public void setMotherboard(String motherboard) {
+        this.motherboard = motherboard;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
+    public String getStorage() {
+        return storage;
+    }
+
+    public void setStorage(String storage) {
+        this.storage = storage;
+    }
+
+    public java.sql.Date getLastMaintenanceDate() {
+        return lastMaintenanceDate;
+    }
+
+    public void setLastMaintenanceDate(java.sql.Date lastMaintenanceDate) {
+        this.lastMaintenanceDate = lastMaintenanceDate;
+    }
+
+    public int getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public void setCurrentUserId(int currentUserId) {
+        this.currentUserId = currentUserId;
+    }
+
+    public String getCurrentUserName() {
+        return currentUserName;
+    }
+
+    public void setCurrentUserName(String currentUserName) {
+        this.currentUserName = currentUserName;
+    }
+
 }

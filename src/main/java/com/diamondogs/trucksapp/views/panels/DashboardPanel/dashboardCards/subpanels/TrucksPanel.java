@@ -1,4 +1,4 @@
-package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
+package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels;
 
 
 import com.diamondogs.trucksapp.controller.TruckController;
@@ -17,7 +17,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class TrucksPanel extends JPanel {

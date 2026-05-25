@@ -1,10 +1,14 @@
-package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
+package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels;
 
 import com.diamondogs.trucksapp.controller.ComputerController;
 import com.diamondogs.trucksapp.model.Computer;
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.session.SessionManager;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.ComputerDetailFrame;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputer;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonEditor;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.utils.ButtonRenderer;
+
 import java.util.List;
 
 import javax.swing.*;
@@ -21,7 +25,7 @@ public class ComputersPanel extends JPanel {
     private final Consumer<User> sessionListener;
 
     private final JTable computersTable = new JTable();
-    private final String[] columnNames = {"Numero Serie", "Fecha Adquisicion", "Tipo", "Software"};
+    private final String[] columnNames = {"Numero Serie", "Fecha Adquisicion", "Tipo", "Detalle"};
 
     public ComputersPanel() {
 
@@ -58,17 +62,23 @@ public class ComputersPanel extends JPanel {
         boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
         boolean isTechnician = "tecnico".equalsIgnoreCase(SessionManager.getInstance().getRole());
 
-        String[] columns = (isAdmin || isTechnician) ? columnNames : new String[]{"Numero Serie", "Fecha Adquisicion", "Tipo", "Software"};
+        String[] columns = (isAdmin || isTechnician) ? columnNames : new String[]{"Numero Serie", "Fecha Adquisicion", "Tipo"};
 
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 3;
             }
         };
 
         //Aplique el modelo a la JTable física para que pinte las columnas en la pantalla (Pua IA esto)
         computersTable.setModel(model);
+        computersTable.getColumn("Detalle").setCellRenderer(new ButtonRenderer("Ver Detalle"));
+        computersTable.getColumn("Detalle").setCellEditor(new ButtonEditor("Ver Detalle", this::showDetail));
+
+        computersTable.getColumn("Detalle").setMaxWidth(100);
+        computersTable.getColumn("Detalle").setMinWidth(70);
+        computersTable.getColumn("Detalle").setPreferredWidth(100);
         computersTable.setRowHeight(30);
     }
 
@@ -88,9 +98,15 @@ public class ComputersPanel extends JPanel {
                     comp.getSerial_num() != null ? comp.getSerial_num() : "N/A",
                     comp.getAdquisicion() != null ? comp.getAdquisicion().toString() : "Sin fecha",
                     comp.getTipo() != null ? comp.getTipo() : "N/A",
-                    comp.getSoftware() != null ? comp.getSoftware() : "N/A"
             });
         }
+    }
+    private void showDetail(int row) {
+        DefaultTableModel model = (DefaultTableModel) computersTable.getModel();
+        String itemId = (String) model.getValueAt(row, 0);   // Get ID from first column
+
+        // Open new window
+        new ComputerDetailFrame(this, itemId).setVisible(true);
     }
     public JPanel getRootPanel() {
         return rootPanel;

@@ -1,4 +1,4 @@
-package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
+package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels;
 
 import com.diamondogs.trucksapp.controller.MaintenanceController;
 import com.diamondogs.trucksapp.model.Maintenance;

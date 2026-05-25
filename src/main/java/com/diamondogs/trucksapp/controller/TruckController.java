@@ -2,7 +2,7 @@ package com.diamondogs.trucksapp.controller;
 
 import com.diamondogs.trucksapp.model.Truck;
 import com.diamondogs.trucksapp.repositories.TruckRepository;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.TrucksPanel;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels.TrucksPanel;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.VentanaCamion;
 
 import javax.swing.*;

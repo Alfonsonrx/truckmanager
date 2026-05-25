@@ -1,10 +1,9 @@
-package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
+package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels;
 
-import com.diamondogs.trucksapp.controller.ComputerController;
-import com.diamondogs.trucksapp.model.Computer;
+import com.diamondogs.trucksapp.controller.ComputerMaintenanceController;
+import com.diamondogs.trucksapp.model.ComputerMaintenance;
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.session.SessionManager;
-import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputer;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputerMaintenance;
 
 import javax.swing.*;
@@ -17,6 +16,8 @@ public class ComputerMaintenancePanel extends JPanel {
     private JPanel rootPanel;
 
     private final FormComputerMaintenance formComputerMaintenance;
+    private final ComputerMaintenanceController maintenanceController;
+
     private final Consumer<User> sessionListener;
 
     private final JTable computersMaintenanceTable = new JTable();
@@ -24,13 +25,14 @@ public class ComputerMaintenancePanel extends JPanel {
 
     public ComputerMaintenancePanel() {
         formComputerMaintenance = new FormComputerMaintenance("Registro de computadores","Ingrese los datos del computador", true);
+        maintenanceController = new ComputerMaintenanceController(this);
 
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
             formComputerMaintenance.setVisible(isAdmin);
             setupTable();
-//            computersController.loadAndShowComputers();
+            maintenanceController.loadAndShowMaintenances();
         });
         SessionManager.getInstance().addListener(sessionListener);
     }
@@ -67,6 +69,20 @@ public class ComputerMaintenancePanel extends JPanel {
         //Aplique el modelo a la JTable física para que pinte las columnas en la pantalla (Pua IA esto)
         computersMaintenanceTable.setModel(model);
         computersMaintenanceTable.setRowHeight(30);
+    }
+    public void updateTable(List<ComputerMaintenance> maintenances) {
+        if (maintenances == null) return;
+        DefaultTableModel model = (DefaultTableModel) computersMaintenanceTable.getModel();
+        model.setRowCount(0);
+        for (ComputerMaintenance m : maintenances) {
+            model.addRow(new Object[]{
+                    m.getId(),
+                    m.getSn_computer(),
+                    m.getDate(),
+                    m.getType(),
+                    m.getReasons()
+            });
+        }
     }
 
     public JPanel getRootPanel() {

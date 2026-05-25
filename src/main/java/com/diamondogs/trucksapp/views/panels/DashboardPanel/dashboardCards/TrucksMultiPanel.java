@@ -1,5 +1,8 @@
 package com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards;
 
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels.MaintenancePanel;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.subpanels.TrucksPanel;
+
 import javax.swing.*;
 import java.awt.*;
 
