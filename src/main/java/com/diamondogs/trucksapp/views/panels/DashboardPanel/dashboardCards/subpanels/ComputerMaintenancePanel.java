@@ -4,6 +4,7 @@ import com.diamondogs.trucksapp.controller.ComputerMaintenanceController;
 import com.diamondogs.trucksapp.model.ComputerMaintenance;
 import com.diamondogs.trucksapp.model.User;
 import com.diamondogs.trucksapp.session.SessionManager;
+import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputer;
 import com.diamondogs.trucksapp.views.panels.DashboardPanel.dashboardCards.forms.FormComputerMaintenance;
 
 import javax.swing.*;
@@ -16,8 +17,6 @@ public class ComputerMaintenancePanel extends JPanel {
     private JPanel rootPanel;
 
     private final FormComputerMaintenance formComputerMaintenance;
-    private final ComputerMaintenanceController maintenanceController;
-
     private final Consumer<User> sessionListener;
 
     private final JTable computersMaintenanceTable = new JTable();
@@ -25,14 +24,14 @@ public class ComputerMaintenancePanel extends JPanel {
 
     public ComputerMaintenancePanel() {
         formComputerMaintenance = new FormComputerMaintenance("Registro de computadores","Ingrese los datos del computador", true);
-        maintenanceController = new ComputerMaintenanceController(this);
-
+        ComputerMaintenanceController computerMaintenanceController = new ComputerMaintenanceController(this);
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
             formComputerMaintenance.setVisible(isAdmin);
             setupTable();
-            maintenanceController.loadAndShowMaintenances();
+            computerMaintenanceController.loadAndShowComputersMaintenance();
+
         });
         SessionManager.getInstance().addListener(sessionListener);
     }
@@ -70,19 +69,27 @@ public class ComputerMaintenancePanel extends JPanel {
         computersMaintenanceTable.setModel(model);
         computersMaintenanceTable.setRowHeight(30);
     }
-    public void updateTable(List<ComputerMaintenance> maintenances) {
-        if (maintenances == null) return;
+    /**
+     * Recibe los datos procesados en segundo plano por el
+     * controlador e introduce dinámicamente las filas en la tabla visual.
+     */
+    public void updateTable(List<ComputerMaintenance> computers) {
+        if (computers == null) return;
+
         DefaultTableModel model = (DefaultTableModel) computersMaintenanceTable.getModel();
-        model.setRowCount(0);
-        for (ComputerMaintenance m : maintenances) {
+        model.setRowCount(0); // Limpia filas viejas para evitar duplicaciones visuales
+
+        for (ComputerMaintenance comp : computers) {
+            // Insertamos los valores de tu modelo en orden correspondiente a las columnas
             model.addRow(new Object[]{
-                    m.getId(),
-                    m.getSn_computer(),
-                    m.getDate(),
-                    m.getType(),
-                    m.getReasons()
+                    comp.getId(),
+                    comp.getSn_computer(),
+                    comp.getDate() != null ? comp.getDate() : "Sin Fecha",
+                    comp.getType() != null ? comp.getType() : "N/A",
+                    comp.getReasons() != null ? comp.getReasons() : "N/A"
             });
         }
+
     }
 
     public JPanel getRootPanel() {
