@@ -30,7 +30,7 @@ public class ComputersPanel extends JPanel {
     public ComputersPanel() {
 
         formComputer = new FormComputer("Registro de computadores","Ingrese los datos del computador", true);
-        computersController = new ComputerController(this);
+        computersController = new ComputerController(this,formComputer);
 
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{

@@ -12,8 +12,10 @@ import java.util.List;
 
 public class UserController implements ActionListener {
 
+    //Formulario
     private final VentanaConductor vistaUsuario;
     private final UserRepository repositorio;
+    //tabla
     private final UsersPanel vista;
 
     // Constructor que RECIBE la vista y activa el botón

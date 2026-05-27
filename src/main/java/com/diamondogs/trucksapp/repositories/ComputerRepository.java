@@ -37,4 +37,56 @@ public class ComputerRepository {
         }
         return computers;
     }//Fin AllConuters
+
+    //Inserta valores
+    public static boolean insertComputer(Computer comp) {
+        String queryComputer = "INSERT INTO computer (serial_num, adquisition_date, type) VALUES (?, ?, ?)";
+        String queryHardware = "INSERT INTO hardware_detail (sn_computer, ram, motherboard, cpu, storage) VALUES (?, ?, ?, ?, ?)";
+        
+        Connection con = null;
+        try {
+            con = DatabaseConfig.getConnection();
+            con.setAutoCommit(false); // Start transaction
+            
+            // 1. Insert into computer table
+            try (PreparedStatement pstmt = con.prepareStatement(queryComputer)) {
+                pstmt.setString(1, comp.getSerial_num());
+                pstmt.setDate(2, comp.getAdquisicion() != null ? new java.sql.Date(comp.getAdquisicion().getTime()) : null);
+                pstmt.setString(3, comp.getTipo());
+                pstmt.executeUpdate();
+            }
+            
+            // 2. Insert into hardware_detail table
+            try (PreparedStatement pstmt2 = con.prepareStatement(queryHardware)) {
+                pstmt2.setString(1, comp.getSerial_num());
+                pstmt2.setString(2, comp.getRam());
+                pstmt2.setString(3, comp.getMotherboard());
+                pstmt2.setString(4, comp.getCpu());
+                pstmt2.setString(5, comp.getStorage());
+                pstmt2.executeUpdate();
+            }
+            
+            con.commit(); // Commit transaction
+            return true;
+        } catch (Exception e) {
+            if (con != null) {
+                try {
+                    con.rollback(); // Rollback on error
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }//Fin de insertar
 }

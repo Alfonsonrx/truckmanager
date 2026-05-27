@@ -83,9 +83,14 @@ public class FormComputer extends JPanel {
         return inputStorage.getText();
     }
 
+    public String getSerialNum() {
+        return inputSerialNum.getText();
+    }
+
     public void clearForm() {
         inputType.setText("");
         inputSwInstalled.setText("");
+        inputSerialNum.setText("");
 
         inputCPU.setText("");
         inputMotherboard.setText("");
