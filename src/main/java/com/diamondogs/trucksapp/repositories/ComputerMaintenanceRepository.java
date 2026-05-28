@@ -3,10 +3,12 @@ package com.diamondogs.trucksapp.repositories;
 import com.diamondogs.trucksapp.config.DatabaseConfig;
 import com.diamondogs.trucksapp.model.Computer;
 import com.diamondogs.trucksapp.model.ComputerMaintenance;
+import com.diamondogs.trucksapp.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,5 +67,25 @@ public class ComputerMaintenanceRepository {
             e.printStackTrace();
         }
         return list;
-    }
+    }//Final bySerialNumber
+
+    public static boolean save(ComputerMaintenance computerMaintenance) {
+        String sql = "INSERT INTO `computermaintenance`(sn_computer, date, type, reasons) "
+                + "VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConfig.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, computerMaintenance.getSn_computer());
+            pstmt.setDate(2, computerMaintenance.getDate() != null ? new java.sql.Date(computerMaintenance.getDate().getTime()) : null);
+            pstmt.setString(3,computerMaintenance.getType() );
+            pstmt.setString(4,computerMaintenance.getReasons() );
+            int rowsInserted = pstmt.executeUpdate();
+
+            return rowsInserted > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }//final save
 }

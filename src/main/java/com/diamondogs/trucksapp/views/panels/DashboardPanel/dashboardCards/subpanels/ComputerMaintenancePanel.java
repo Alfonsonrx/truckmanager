@@ -17,6 +17,7 @@ public class ComputerMaintenancePanel extends JPanel {
     private JPanel rootPanel;
 
     private final FormComputerMaintenance formComputerMaintenance;
+    private final ComputerMaintenanceController computerMaintenanceController;
     private final Consumer<User> sessionListener;
 
     private final JTable computersMaintenanceTable = new JTable();
@@ -24,7 +25,7 @@ public class ComputerMaintenancePanel extends JPanel {
 
     public ComputerMaintenancePanel() {
         formComputerMaintenance = new FormComputerMaintenance("Registro de computadores","Ingrese los datos del computador", true);
-        ComputerMaintenanceController computerMaintenanceController = new ComputerMaintenanceController(this);
+        computerMaintenanceController = new ComputerMaintenanceController(formComputerMaintenance,this);
         initializeComponents();
         sessionListener = user -> SwingUtilities.invokeLater(()->{
             boolean isAdmin = "administrador".equalsIgnoreCase(SessionManager.getInstance().getRole());
